@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Core", "Advent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Map", "AdventOfCode.Map\AdventOfCode.Map.csproj", "{A23A0DB8-3E44-4AED-845D-A718340C8E8D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdventOfCode", "AdventOfCode", "{7370C346-5000-4CB3-856B-0BDEB95CA0E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2024", "AdventOfCode\2024\2024.csproj", "{F616F74F-6EF4-47F9-A4C9-72FFB46A825F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2024Tests", "AdventOfCode\2024Tests\2024Tests.csproj", "{2310B529-249E-498D-8715-CD3600D2DE17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,11 +33,23 @@ Global
 		{A23A0DB8-3E44-4AED-845D-A718340C8E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A23A0DB8-3E44-4AED-845D-A718340C8E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A23A0DB8-3E44-4AED-845D-A718340C8E8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F616F74F-6EF4-47F9-A4C9-72FFB46A825F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F616F74F-6EF4-47F9-A4C9-72FFB46A825F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F616F74F-6EF4-47F9-A4C9-72FFB46A825F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F616F74F-6EF4-47F9-A4C9-72FFB46A825F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2310B529-249E-498D-8715-CD3600D2DE17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2310B529-249E-498D-8715-CD3600D2DE17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2310B529-249E-498D-8715-CD3600D2DE17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2310B529-249E-498D-8715-CD3600D2DE17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {174CFA86-E6C8-42CD-A7D7-801FC032340B}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F616F74F-6EF4-47F9-A4C9-72FFB46A825F} = {7370C346-5000-4CB3-856B-0BDEB95CA0E7}
+		{2310B529-249E-498D-8715-CD3600D2DE17} = {7370C346-5000-4CB3-856B-0BDEB95CA0E7}
 	EndGlobalSection
 EndGlobal

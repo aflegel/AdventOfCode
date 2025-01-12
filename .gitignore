@@ -253,3 +253,5 @@ _Pvt_Extensions
 
 ### Mac files ###
 .DS_Store
+
+*.txt

@@ -5,10 +5,10 @@ namespace AdventOfCode.Cli;
 
 internal class ResolutionService
 {
-    public async Task<IAdventDay> GetDay(int day)
+    public static async Task<IAdventDay> GetDay(int day)
     {
         var type = Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(t => t.Name == $"Day{day:D2}")
-            ?? throw new NotImplementedException();
+            ?? throw new EntryPointNotFoundException();
 
         if (type.GetInterface(nameof(IAdventDay)) is null)
             throw new InvalidCastException($"{type} does not implement interface IAdventDay");
@@ -17,7 +17,7 @@ internal class ResolutionService
         var input = await stream.ReadToEndAsync();
 
         var ctor = (type?.GetConstructor([typeof(string)]))
-            ?? throw new EntryPointNotFoundException("Constructor not found");
+            ?? throw new InvalidProgramException("Constructor not found");
 
         return (IAdventDay)ctor.Invoke([input.ReplaceLineEndings("\n")]);
     }
@@ -26,6 +26,6 @@ internal class ResolutionService
     {
         1 => day.Part1(),
         2 => day.Part2(),
-        _ => throw new NotImplementedException()
+        _ => throw new ArgumentOutOfRangeException(nameof(part))
     };
 }
