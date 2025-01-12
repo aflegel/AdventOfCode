@@ -1,7 +1,30 @@
 ﻿using System.CommandLine;
 using AdventOfCode.Cli;
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine("Welcome to the Advent of Code Cli");
+var first = new string[] { "AdventOfCode.Cli" };
+var handler = new CliHandler();
+
+do
+{
+    Console.WriteLine("Enter the deets");
+    var data = Console.ReadLine();
+
+    var arguments = data?.Split(' ') ?? [];
+
+    if (arguments.Length == 0 || arguments[0] == string.Empty)
+    {
+        Console.WriteLine("Exiting...");
+        break;
+    }
+
+    if (arguments[0] != first[0])
+        arguments = [.. first.Union(arguments)];
+
+    handler.Invoke(arguments);
+
+} while (true);
+
 
 internal class CliHandler
 {
@@ -21,8 +44,10 @@ internal class CliHandler
     {
         try
         {
-            //inject the resolution service here
-            var blah = ResolutionService.GetDay(day);
+            var iDay = ResolutionService.GetDay(year, day).GetAwaiter().GetResult();
+            var result = ResolutionService.GetPart(iDay, part);
+
+            Console.WriteLine(result);
             //needs some graceful error handling
         }
         catch (NotImplementedException)
@@ -31,7 +56,7 @@ internal class CliHandler
         }
         catch (Exception)
         {
-
+            Console.WriteLine("Something else went wrong");
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Data;
 using AdventOfCode.Core;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public partial class Day05 : IAdventDay
 {

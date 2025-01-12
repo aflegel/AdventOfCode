@@ -1,4 +1,4 @@
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 internal static class CharExtensions
 {

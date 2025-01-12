@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using AdventOfCode.Core;
 using AdventOfCode.Map;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public partial class Day14(string input) : IAdventDay
 {

@@ -1,8 +1,8 @@
 using Xunit;
-using AdventOfCode;
+using AdventOfCode.Y2024;
 using FluentAssertions;
 
-namespace AdventOfCodeTests;
+namespace AdventOfCode.Y2024Tests;
 
 public class Day20Tests
 {

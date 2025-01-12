@@ -1,6 +1,6 @@
 using AdventOfCode.Core;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public class Day02(string input) : IAdventDay
 {

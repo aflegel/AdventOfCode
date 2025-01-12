@@ -1,7 +1,7 @@
 using AdventOfCode.Core;
 using AdventOfCode.Map;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public class Day25(string input) : IAdventDay
 {
@@ -12,14 +12,16 @@ public class Day25(string input) : IAdventDay
 		var locks = Schematics.Where(w => w.Positions().Where(a => a.Y == 0).All(a => w[a] == '#')).ToList();
 		var keys = Schematics.Except(locks).ToList();
 
-		var lockMap = locks.Select(s => s.SearchAll('#').GroupBy(w => w.X).OrderBy(o => o.Key).Select(ss => ss.Max(m => m.Y)).ToList()).ToList();
-
-		var keyMap = keys.Select(s => s.SearchAll('#').GroupBy(g => g.X).OrderBy(o => o.Key).Select(ss => s.Height - ss.Min(m => m.Y)).ToList()).ToList();
+		var lockMap = locks.Select(s => s.SearchAll('#').GroupBy(w => w.X).OrderBy(o => o.Key)
+			.Select(ss => ss.Max(m => m.Y)).ToList()).ToList();
+		var keyMap = keys.Select(s => s.SearchAll('#').GroupBy(g => g.X).OrderBy(o => o.Key)
+			.Select(ss => s.Height - ss.Min(m => m.Y)).ToList()).ToList();
 
 		var search = lockMap.SelectMany(s => keyMap, (locks, key) => (locks, key)).Count(Fits);
 
 		return search.ToString();
 	}
+
 	private static bool Fits((List<int> locker, List<int> key) pair)
 	{
 		for (var i = 0; i < pair.locker.Count; i++)

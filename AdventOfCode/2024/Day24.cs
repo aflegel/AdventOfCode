@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using AdventOfCode.Core;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public partial class Day24(string input) : IAdventDay
 {

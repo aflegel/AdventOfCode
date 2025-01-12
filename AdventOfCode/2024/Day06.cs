@@ -2,7 +2,7 @@
 using AdventOfCode.Core;
 using AdventOfCode.Map;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public class Day06(string input) : IAdventDay
 {

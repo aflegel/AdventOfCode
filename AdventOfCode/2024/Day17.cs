@@ -1,7 +1,7 @@
 using System.Collections;
 using AdventOfCode.Core;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2024;
 
 public class Day17(string input) : IAdventDay
 {
