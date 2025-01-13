@@ -2,47 +2,24 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day05 : IAdventDay
+public class Day05(string input) : IAdventDay
 {
-	private struct Line
-	{
-		public Coordinate Origin { get; set; }
-		public Coordinate Destination { get; set; }
-	}
-	private record Coordinate
-	{
-		public int X { get; set; }
-		public int Y { get; set; }
-	}
-	private int[,] Map { get; }
-	private Line[] Lines { get; }
+	private record Line(Coordinate Origin, Coordinate Destination);
+	private record Coordinate(int X, int Y);
 
-	public Day05(string input)
-	{
-		Lines = input.Replace("\r", "").Split("\n").Select(s =>
+	private int[,] Map { get; } = new int[1000, 1000];
+	private Line[] Lines { get; } = [.. input.Split("\n").Select(s =>
 		{
 			var data = s.Split("->");
 			var origin = data[0].Split(",");
 			var destination = data[1].Split(",");
-			return new Line
-			{
-				Origin = new Coordinate
-				{
-					X = int.Parse(origin[0]),
-					Y = int.Parse(origin[1])
-				},
-				Destination = new Coordinate
-				{
-					X = int.Parse(destination[0]),
-					Y = int.Parse(destination[1])
-				}
-			};
-		}).ToArray();
+			return new Line(
+				new Coordinate(int.Parse(origin[0]),int.Parse(origin[1])),
+				new Coordinate(int.Parse(destination[0]),int.Parse(destination[1]))
+			);
+		})];
 
-		Map = new int[1000, 1000];
-	}
-
-	private (int x, int y)[] GetRange(Coordinate origin, Coordinate destination)
+	private static (int x, int y)[] GetRange(Coordinate origin, Coordinate destination)
 	{
 		(var dx, var dy) = (origin.X - destination.X, origin.Y - destination.Y);
 
@@ -51,7 +28,7 @@ public class Day05 : IAdventDay
 
 		if (dx == 0 || dy == 0)
 		{
-			return rangex.SelectMany(x => rangey, (x, y) => (x, y)).ToArray();
+			return [.. rangex.SelectMany(x => rangey, (x, y) => (x, y))];
 		}
 		else
 		{
@@ -65,11 +42,11 @@ public class Day05 : IAdventDay
 				output.Add((rangex[invertx ? rangey.Length - 1 - i : i], rangey[inverty ? rangey.Length - 1 - i : i]));
 			}
 
-			return output.ToArray();
+			return [.. output];
 		}
 	}
 
-	private int[] MakeRange((int, int) range) => Enumerable.Range(range.Item1, range.Item2 + 1).ToArray();
+	private static int[] MakeRange((int, int) range) => [.. Enumerable.Range(range.Item1, range.Item2 + 1)];
 
 
 	public string Part1()

@@ -2,28 +2,26 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day10 : IAdventDay
+public class Day10(string input) : IAdventDay
 {
-	private string[] InputArray { get; }
+	private string[] InputArray { get; } = input.Split("\n");
 
-	public Day10(string input) => InputArray = input.Replace("\r", "").Split("\n");
-
-	private int GetCompilerScore(char character) => character switch
+	private static int GetCompilerScore(char character) => character switch
 	{
 		')' => 3,
 		']' => 57,
 		'}' => 1197,
 		'>' => 25137,
-		_ => throw new ArgumentOutOfRangeException()
+		_ => throw new ArgumentOutOfRangeException(nameof(character))
 	};
 
-	private char GetMatch(char character) => character switch
+	private static char GetMatch(char character) => character switch
 	{
 		'(' => ')',
 		'[' => ']',
 		'{' => '}',
 		'<' => '>',
-		_ => throw new ArgumentOutOfRangeException(),
+		_ => throw new ArgumentOutOfRangeException(nameof(character)),
 	};
 
 	public string Part1()
@@ -52,13 +50,13 @@ public class Day10 : IAdventDay
 		return sum.ToString();
 	}
 
-	private long GetAutocompleteScore(char character) => character switch
+	private static long GetAutocompleteScore(char character) => character switch
 	{
 		'(' => 1,
 		'[' => 2,
 		'{' => 3,
 		'<' => 4,
-		_ => throw new ArgumentOutOfRangeException()
+		_ => throw new ArgumentOutOfRangeException(nameof(character))
 	};
 
 

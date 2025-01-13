@@ -8,7 +8,7 @@ public class Day15 : IAdventDay
 
 	public Day15(string input)
 	{
-		var rows = input.Replace("\r", "").Split("\n");
+		var rows = input.Split("\n");
 
 		InputArray = new int[rows.Length, rows.First().Length];
 
@@ -41,10 +41,10 @@ public class Day15 : IAdventDay
 
 		var possibleTiles = new List<Tile>()
 		{
-			new Tile { X = currentTile.X, Y = currentTile.Y - 1, Parent = currentTile },
-			new Tile { X = currentTile.X, Y = currentTile.Y + 1, Parent = currentTile },
-			new Tile { X = currentTile.X - 1, Y = currentTile.Y, Parent = currentTile },
-			new Tile { X = currentTile.X + 1, Y = currentTile.Y, Parent = currentTile },
+			new() { X = currentTile.X, Y = currentTile.Y - 1, Parent = currentTile },
+			new() { X = currentTile.X, Y = currentTile.Y + 1, Parent = currentTile },
+			new() { X = currentTile.X - 1, Y = currentTile.Y, Parent = currentTile },
+			new() { X = currentTile.X + 1, Y = currentTile.Y, Parent = currentTile },
 		}
 			.Where(tile => tile.X >= 0 && tile.X <= maxX)
 			.Where(tile => tile.Y >= 0 && tile.Y <= maxY)
@@ -133,26 +133,5 @@ public class Day15 : IAdventDay
 		}
 
 		return AStar(largeInput).ToString();
-	}
-
-	private static void RenderPath(Tile tile)
-	{
-		if (tile.Parent == null)
-			return;
-		Console.WriteLine($"{tile.X},{tile.Y} - {tile.Cost}");
-		RenderPath(tile.Parent);
-		return;
-	}
-
-	private void Render(int[,] page)
-	{
-		for (var i = 0; i < page.GetLength(1); i++)
-		{
-			for (var j = 0; j < page.GetLength(0); j++)
-			{
-				Console.Write(page[i, j]);
-			}
-			Console.WriteLine();
-		}
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day08 : IAdventDay
+public class Day08(string input) : IAdventDay
 {
 	private record SegmentDisplay
 	{
@@ -10,19 +10,17 @@ public class Day08 : IAdventDay
 		public string[] Display { get; set; }
 	}
 
-	private SegmentDisplay[] InputArray { get; }
-
-	public Day08(string input) => InputArray = input.Replace("\r", "").Split("\n").Select(s =>
+	private SegmentDisplay[] InputArray { get; }= [.. input.Split("\n").Select(s =>
 	{
 		var record = s.Split("|");
 		return new SegmentDisplay
 		{
-			Encoding = record[0].Split(" ").Where(w => w.Length > 0).ToArray(),
-			Display = record[1].Split(" ").Where(w => w.Length > 0).ToArray()
+			Encoding = [.. record[0].Split(" ").Where(w => w.Length > 0)],
+			Display = [.. record[1].Split(" ").Where(w => w.Length > 0)]
 		};
-	}).ToArray();
+	})];
 
-	private readonly int[] uniqueDigits = new int[] { 2, 3, 4, 7 };
+	private readonly int[] uniqueDigits = [2, 3, 4, 7];
 	public string Part1() => InputArray.SelectMany(w => w.Display)
 		.Count(w => uniqueDigits.Contains(w.Length)).ToString();
 

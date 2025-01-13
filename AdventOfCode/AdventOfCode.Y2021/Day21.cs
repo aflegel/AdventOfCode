@@ -9,16 +9,16 @@ public class Day21 : IAdventDay
 
 	public Day21(string input)
 	{
-		var players = input.Replace("\r", "")
+		var players = input
 			.Split("\n");
 
-		InputPlayer1 = Convert.ToInt32(players[0][(players[0].LastIndexOf(":") + 1)..]);
-		InputPlayer2 = Convert.ToInt32(players[1][(players[1].LastIndexOf(":") + 1)..]);
+		InputPlayer1 = Convert.ToInt32(players[0][(players[0].LastIndexOf(':') + 1)..]);
+		InputPlayer2 = Convert.ToInt32(players[1][(players[1].LastIndexOf(':') + 1)..]);
 	}
 
 	internal interface IDie
 	{
-		public int Roll();
+		int Roll();
 	}
 
 	private class DeterministicDie : IDie
@@ -100,7 +100,7 @@ public class Day21 : IAdventDay
 
 	private static Dictionary<int, int> Distribution => new() { { 3, 1 }, { 4, 3 }, { 5, 6 }, { 6, 7 }, { 7, 6 }, { 8, 3 }, { 9, 1 } };
 
-	private (ulong p1Wins, ulong p2Wins) Play(Player p1, Player p2, Turn turn)
+	private static (ulong p1Wins, ulong p2Wins) Play(Player p1, Player p2, Turn turn)
 	{
 		if (turn == Turn.Player2 && p1.Score >= 21)
 			return (1, 0);

@@ -26,7 +26,7 @@ public class Day17 : IAdventDay
 		public int Dy { get; set; }
 	}
 
-	private Probe Advance(Probe probe)
+	private static Probe Advance(Probe probe)
 	{
 		var newProbe = new Probe
 		{
@@ -35,8 +35,6 @@ public class Day17 : IAdventDay
 			Dx = probe.Dx + (probe.Dx > 0 ? -1 : probe.Dx < 0 ? 1 : 0),
 			Dy = probe.Dy - 1
 		};
-
-		//Console.WriteLine($"({probe.X},{probe.Y})");
 
 		return newProbe;
 	}
@@ -121,10 +119,4 @@ public class Day17 : IAdventDay
 	public string Part1() => FiringSolutions().Max(s => s.Item3).ToString();
 
 	public string Part2() => FiringSolutions().Count().ToString();
-
-	private void Render(Probe probe)
-	{
-		Console.WriteLine($"Pos: {probe.X},{probe.Y}");
-		Console.WriteLine($"Vel: {probe.Dx},{probe.Dy}");
-	}
 }

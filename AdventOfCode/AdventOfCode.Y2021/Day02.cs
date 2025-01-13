@@ -2,7 +2,7 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day02 : IAdventDay
+public class Day02(string input) : IAdventDay
 {
 	private enum Direction
 	{
@@ -17,10 +17,7 @@ public class Day02 : IAdventDay
 		public int Scalar { get; init; }
 	}
 
-	private List<Instruction> InputArray { get; }
-
-	public Day02(string input) =>
-		InputArray = input.Split("\n").Where(w => w.Any()).Select(s => {
+	private List<Instruction> InputArray { get; } = [.. input.Split("\n").Select(s => {
 			var split = s.Split(' ');
 			return new Instruction
 			{
@@ -33,7 +30,7 @@ public class Day02 : IAdventDay
 				},
 				Scalar = Convert.ToInt32(split[1])
 			};
-		}).ToList();
+		})];
 
 	public string Part1()
 	{

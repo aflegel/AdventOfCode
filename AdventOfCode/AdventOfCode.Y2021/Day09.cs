@@ -8,7 +8,7 @@ public class Day09 : IAdventDay
 
 	public Day09(string input)
 	{
-		var rows = input.Replace("\r", "").Split("\n");
+		var rows = input.Split("\n");
 
 		InputArray = new int[rows.Length, rows.First().Length];
 
@@ -70,7 +70,7 @@ public class Day09 : IAdventDay
 		{
 			var recusion = GetBasins(current, i);
 
-			current = current.Union(recusion).ToArray();
+			current = [.. current.Union(recusion)];
 		}
 
 		return current;

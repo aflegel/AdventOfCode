@@ -3,7 +3,7 @@ using AdventOfCode.Core;
 
 namespace AdventOfCode.Y2021;
 
-public class Day12 : IAdventDay
+public class Day12(string input) : IAdventDay
 {
 	private record Cave
 	{
@@ -23,9 +23,7 @@ public class Day12 : IAdventDay
 		}
 	}
 
-	private string[][] InputArray { get; }
-
-	public Day12(string input) => InputArray = input.Replace("\r", "").Split("\n").Select(x => x.Split("-")).ToArray();
+	private string[][] InputArray { get; } = [.. input.Split("\n").Select(x => x.Split("-"))];
 
 	private Cave[] BuildCaves()
 	{
@@ -52,7 +50,7 @@ public class Day12 : IAdventDay
 
 	private static bool IsLower(string s) => s.All(c => char.IsLower(c));
 
-	private IEnumerable<string[]> TraverseCaveSimple(Cave cave, string[] path)
+	private static IEnumerable<string[]> TraverseCaveSimple(Cave cave, string[] path)
 	{
 		foreach (var next in cave.Caves)
 		{
@@ -62,7 +60,7 @@ public class Day12 : IAdventDay
 			if (IsLower(next.Name) && path.Contains(next.Name))
 				continue;
 
-			var traversal = TraverseCaveSimple(next, path.Append(cave.Name).ToArray());
+			var traversal = TraverseCaveSimple(next, [.. path, cave.Name]);
 			foreach (var array in traversal)
 			{
 				yield return array;
@@ -83,7 +81,7 @@ public class Day12 : IAdventDay
 		return paths.Length.ToString();
 	}
 
-	private IEnumerable<string[]> TraverseCaveComplex(Cave cave, string[] path)
+	private static IEnumerable<string[]> TraverseCaveComplex(Cave cave, string[] path)
 	{
 		foreach (var next in cave.Caves)
 		{
@@ -103,7 +101,7 @@ public class Day12 : IAdventDay
 				}
 			}
 
-			var traversal = TraverseCaveComplex(next, path.Append(cave.Name).ToArray());
+			var traversal = TraverseCaveComplex(next, [.. path, cave.Name]);
 			foreach (var array in traversal)
 			{
 				yield return array;

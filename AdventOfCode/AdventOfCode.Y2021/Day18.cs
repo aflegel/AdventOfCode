@@ -2,13 +2,11 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day18 : IAdventDay
+public class Day18(string input) : IAdventDay
 {
-	private List<string> InputArray { get; }
-	private readonly char[] numbers = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-	private readonly char[] symbols = new char[] { '[', ']', ',' };
-
-	public Day18(string input) => InputArray = input.Replace("\r", "").Split("\n").ToList();
+	private List<string> InputArray { get; } = [.. input.Split("\n")];
+	private readonly char[] numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+	private readonly char[] symbols = ['[', ']', ','];
 
 	private string Reduce(string input)
 	{

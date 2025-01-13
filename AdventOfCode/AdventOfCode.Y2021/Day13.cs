@@ -14,18 +14,18 @@ public class Day13 : IAdventDay
 
 	public Day13(string input)
 	{
-		var split = input.Replace("\r", "").Split("\n\n");
-		InputArray = split[0].Split("\n").Select(s =>
+		var split = input.Split("\n\n");
+		InputArray = [.. split[0].Split("\n").Select(s =>
 		{
 			var temp = s.Split(",");
 			return (Convert.ToInt32(temp[0]), Convert.ToInt32(temp[1]));
-		}).ToArray();
+		})];
 
-		FoldArray = split[1].Split("\n").Select(s =>
+		FoldArray = [.. split[1].Split("\n").Select(s =>
 		{
 			var temp = s.Split("=");
 			return (temp[0].Contains('x') ? Fold.X : Fold.Y, Convert.ToInt32(temp[1]));
-		}).ToArray();
+		})];
 
 		Console.WriteLine($"X: {InputArray.Max(m => m.x)} - {CalculatePageSize(Fold.X)}");
 		Console.WriteLine($"Y: {InputArray.Max(m => m.y)} - {CalculatePageSize(Fold.Y)}");
@@ -45,7 +45,7 @@ public class Day13 : IAdventDay
 
 	private int CalculatePageSize(Fold fold) => FoldArray.Where(w => w.fold == fold).Max(m => m.i) * 2 + 1;
 
-	private bool[,] FoldPage(bool[,] page, Fold fold, int position)
+	private static bool[,] FoldPage(bool[,] page, Fold fold, int position)
 	{
 		var oldX = page.GetLength(0);
 		var oldY = page.GetLength(1);
@@ -66,7 +66,7 @@ public class Day13 : IAdventDay
 		return newPage;
 	}
 
-	private void Render(bool[,] page)
+	private static void Render(bool[,] page)
 	{
 		for (var i = 0; i < page.GetLength(1); i++)
 		{

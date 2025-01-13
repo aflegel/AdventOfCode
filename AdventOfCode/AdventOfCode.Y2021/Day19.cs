@@ -3,22 +3,20 @@ using AdventOfCode.Core;
 
 namespace AdventOfCode.Y2021;
 
-public class Day19 : IAdventDay
+public class Day19(string input) : IAdventDay
 {
-	private List<Sensor> InputArray { get; }
-
-	public Day19(string input) => InputArray = input.Replace("\r", "")
+	private List<Sensor> InputArray { get; }= [.. input
 		//by scanner
 		.Split("\n\n").Select((s, i) => new Sensor
 		{
 			Id = i,
-			Beacons = s.Split("\n").Skip(1).Select(s =>
+			Beacons = [.. s.Split("\n").Skip(1).Select(s =>
 			{
 				var x = s.Split(",").Select(x => Convert.ToInt32(x)).ToList();
 
 				return new Vector3(x[0], x[1], x[2]);
-			}).ToList()
-		}).ToList();
+			})]
+		})];
 
 	private class Sensor
 	{
@@ -90,10 +88,9 @@ public class Day19 : IAdventDay
 		return Rotate(test, x, y, z);
 	}
 
-	private static List<(Vector3 a, Vector3 b)> CrossProduct(List<Vector3> positions) => positions
+	private static List<(Vector3 a, Vector3 b)> CrossProduct(List<Vector3> positions) => [.. positions
 		.SelectMany(s => positions, (a, b) => (a, b))
-			.Where(w => w.a != w.b)
-			.ToList();
+			.Where(w => w.a != w.b)];
 
 	private static Sensor? Triangulate(List<Vector3> beacons, Sensor unknownSensor)
 	{
@@ -122,9 +119,7 @@ public class Day19 : IAdventDay
 						{
 							Id = unknownSensor.Id,
 							Position = match?.translation ?? new Vector3(),
-							Beacons = Rotate(unknownSensor.Beacons, (int)match.Value.rotation.X, (int)match.Value.rotation.Y, (int)match.Value.rotation.Z)
-								.Select(s => new Vector3(s.X + match.Value.translation.X, s.Y + match.Value.translation.Y, s.Z + match.Value.translation.Z))
-								.ToList()
+							Beacons = [.. Rotate(unknownSensor.Beacons, (int)match.Value.rotation.X, (int)match.Value.rotation.Y, (int)match.Value.rotation.Z).Select(s => new Vector3(s.X + match.Value.translation.X, s.Y + match.Value.translation.Y, s.Z + match.Value.translation.Z))]
 						};
 					}
 				}
@@ -133,7 +128,7 @@ public class Day19 : IAdventDay
 		return null;
 	}
 
-	private List<Sensor> TriangulateSensors(List<Sensor> triangulatedSensors, List<Sensor> unknown)
+	private static List<Sensor> TriangulateSensors(List<Sensor> triangulatedSensors, List<Sensor> unknown)
 	{
 		if (unknown.Count == 0)
 			return triangulatedSensors;
@@ -152,13 +147,13 @@ public class Day19 : IAdventDay
 				{
 					triangulatedSensors.Add(result);
 					var zero = triangulatedSensors.First();
-					zero.Beacons = zero.Beacons.Union(result.Beacons).Distinct().ToList();
+					zero.Beacons = [.. zero.Beacons.Union(result.Beacons).Distinct()];
 					break;
 				}
 			}
 		}
 
-		unknown = unknown.Where(w => !triangulatedSensors.Select(s => s.Id).Contains(w.Id)).ToList();
+		unknown = [.. unknown.Where(w => !triangulatedSensors.Select(s => s.Id).Contains(w.Id))];
 
 		return TriangulateSensors(triangulatedSensors, unknown);
 	}
@@ -173,9 +168,9 @@ public class Day19 : IAdventDay
 			beacons.Add(new Vector3(beacon.X, beacon.Y, beacon.Z));
 		}
 
-		var triangulatedSensors = TriangulateSensors(new List<Sensor> { InputArray.First() }, InputArray.Skip(1).ToList());
+		var triangulatedSensors = TriangulateSensors(new List<Sensor> { InputArray.First() }, [.. InputArray.Skip(1)]);
 
-		beacons = triangulatedSensors.SelectMany(s => s.Beacons).Distinct().ToList();
+		beacons = [.. triangulatedSensors.SelectMany(s => s.Beacons).Distinct()];
 
 		return beacons.Count.ToString();
 	}
@@ -189,7 +184,7 @@ public class Day19 : IAdventDay
 			beacons.Add(new Vector3(beacon.X, beacon.Y, beacon.Z));
 		}
 
-		var triangulatedSensors = TriangulateSensors(new List<Sensor> { InputArray.First() }, InputArray.Skip(1).ToList());
+		var triangulatedSensors = TriangulateSensors(new List<Sensor> { InputArray.First() }, [.. InputArray.Skip(1)]);
 
 		var positions = triangulatedSensors.SelectMany(s => triangulatedSensors, (a, b) => a.Position - b.Position).Max(m => m.X + m.Y + m.Z);
 

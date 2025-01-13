@@ -4,21 +4,15 @@ namespace AdventOfCode.Y2021;
 
 public class Day04 : IAdventDay
 {
-	private class Bingo
+	private class Bingo(string input)
 	{
-		private int[][] Grid { get; init; }
-		private int[] MarkedNumbers { get; set; }
-
-		public Bingo(string input)
-		{
-			MarkedNumbers = new int[0];
-			Grid = input.Split("\n").Select(s => s.Split(" ").Where(w => w.Length > 0).Select(ss => Convert.ToInt32(ss)).ToArray()).ToArray();
-		}
+		private int[][] Grid { get; init; } = [.. input.Split("\n").Select(s => s.Split(" ").Where(w => w.Length > 0).Select(ss => Convert.ToInt32(ss)).ToArray())];
+		private int[] MarkedNumbers { get; set; } = [];
 
 		public bool Marknumber(int number)
 		{
 			if (Grid.SelectMany(s => s).Contains(number))
-				MarkedNumbers = MarkedNumbers.Append(number).ToArray();
+				MarkedNumbers = [.. MarkedNumbers, number];
 
 			return HasBingo();
 		}
@@ -48,11 +42,11 @@ public class Day04 : IAdventDay
 
 	public Day04(string input)
 	{
-		input = input.Replace("\r", "");
+		input = input;
 
-		InputArray = input[..input.IndexOf("\n")].Split(",").Select(s => Convert.ToInt32(s)).ToArray();
+		InputArray = [.. input[..input.IndexOf("\n")].Split(",").Select(s => Convert.ToInt32(s))];
 
-		BingoArray = input[input.IndexOf("\n")..].Split("\n\n").Where(w => w.Length > 0).Select(s => new Bingo(s)).ToArray();
+		BingoArray = [.. input[input.IndexOf("\n")..].Split("\n\n").Where(w => w.Length > 0).Select(s => new Bingo(s))];
 	}
 
 	public string Part1()

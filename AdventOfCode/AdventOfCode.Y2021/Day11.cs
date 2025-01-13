@@ -7,7 +7,7 @@ public class Day11 : IAdventDay
 	private int[,] InputArray { get; }
 	public Day11(string input)
 	{
-		var temp = input.Replace("\r", "").Split("\n");
+		var temp = input.Split("\n");
 		InputArray = new int[10, 10];
 		for (var i = 0; i < temp.Length; i++)
 		{

@@ -2,11 +2,9 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day16 : IAdventDay
+public class Day16(string input) : IAdventDay
 {
-	private List<bool> InputArray { get; }
-
-	public Day16(string input) => InputArray = input.SelectMany(s => GetByte(s)).ToList();
+	private List<bool> InputArray { get; } = [.. input.SelectMany(GetByte)];
 
 	private static IEnumerable<bool> GetByte(char input)
 	{
@@ -39,7 +37,7 @@ public class Day16 : IAdventDay
 
 	private static ulong ReadVersion(List<bool> input) => Convert(Read(input, 0, 3));
 	private static ulong ReadType(List<bool> input) => Convert(Read(input, 3, 3));
-	private static List<bool> Read(List<bool> input, int skip, int? take = null) => input.Skip(skip).Take(take ?? input.Count - skip).ToList();
+	private static List<bool> Read(List<bool> input, int skip, int? take = null) => [.. input.Skip(skip).Take(take ?? input.Count - skip)];
 	private static ulong Convert(List<bool> input)
 	{
 		ulong result = 0;
@@ -47,23 +45,15 @@ public class Day16 : IAdventDay
 		return result;
 	}
 
-	private abstract class PacketBase
+	private abstract class PacketBase(List<bool> bytes, int version, int type, int header)
 	{
-		public int Version { get; }
+		public int Version { get; } = version;
 		public int TotalLength { get; protected init; }
-		protected int Header { get; init; }
-		public int PacketType { get; }
+		protected int Header { get; init; } = header;
+		public int PacketType { get; } = type;
 		public ulong? Literal { get; protected init; }
-		protected List<bool> Data { get; }
+		protected List<bool> Data { get; } = bytes;
 		public List<PacketBase> Packets { get; } = new();
-
-		public PacketBase(List<bool> bytes, int version, int type, int header)
-		{
-			Data = bytes;
-			Version = version;
-			Header = header;
-			PacketType = type;
-		}
 	}
 	private class PacketL0Base : PacketBase
 	{
@@ -80,7 +70,7 @@ public class Day16 : IAdventDay
 			offset += Length;
 			do
 			{
-				var test = PacketFactory(bytes.Skip(offset).ToList());
+				var test = PacketFactory([.. bytes.Skip(offset)]);
 				offset += test.TotalLength;
 				Packets.Add(test);
 			} while (offset < totalLength);
@@ -101,7 +91,7 @@ public class Day16 : IAdventDay
 
 			for (var i = 0; i < packetCount; i++)
 			{
-				var test = PacketFactory(bytes.Skip(offset).ToList());
+				var test = PacketFactory([.. bytes.Skip(offset)]);
 				Packets.Add(test);
 				offset += test.TotalLength;
 			}
@@ -145,9 +135,9 @@ public class Day16 : IAdventDay
 		};
 	}
 
-	private int SumVersions(PacketBase packet) => packet.Version + packet.Packets.Sum(x => SumVersions(x));
+	private static int SumVersions(PacketBase packet) => packet.Version + packet.Packets.Sum(x => SumVersions(x));
 
-	private ulong Evaluate(PacketBase packet)
+	private static ulong Evaluate(PacketBase packet)
 	{
 		var result = packet.PacketType switch
 		{

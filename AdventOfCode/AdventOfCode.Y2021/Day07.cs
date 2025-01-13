@@ -2,12 +2,9 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day07 : IAdventDay
+public class Day07(string input) : IAdventDay
 {
-	private int[] InputArray { get; }
-
-	public Day07(string input) => InputArray = input.Split(",").Select(s => Convert.ToInt32(s)).ToArray();
-
+	private int[] InputArray { get; } = [.. input.Split(",").Select(s => Convert.ToInt32(s))];
 
 	public string Part1()
 	{
@@ -24,7 +21,6 @@ public class Day07 : IAdventDay
 
 		return output.ToString();
 	}
-
 
 	public string Part2()
 	{

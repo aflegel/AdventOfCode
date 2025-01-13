@@ -3,11 +3,9 @@ using AdventOfCode.Core;
 
 namespace AdventOfCode.Y2021;
 
-public class Day22 : IAdventDay
+public class Day22(string input) : IAdventDay
 {
-	private List<Instruction> InputArray { get; }
-
-	public Day22(string input) => InputArray = input.Replace("\r", "").Split("\n")
+	private List<Instruction> InputArray { get; } = [.. input.Split("\n")
 		.Select(s =>
 		{
 			var on = s.Contains("on");
@@ -25,13 +23,13 @@ public class Day22 : IAdventDay
 				Start = new Vector3(x.Item1, y.Item1, z.Item1),
 				End = new Vector3(x.Item2, y.Item2, z.Item2)
 			};
-		}).ToList();
+		})];
 
 	private static (int, int) Extract(string input)
 	{
 		var split = input.Split("..");
 
-		return (Convert.ToInt32(split[0][(split[0].IndexOf("=") + 1)..]), Convert.ToInt32(split[1]));
+		return (Convert.ToInt32(split[0][(split[0].IndexOf('=') + 1)..]), Convert.ToInt32(split[1]));
 	}
 
 	private enum State

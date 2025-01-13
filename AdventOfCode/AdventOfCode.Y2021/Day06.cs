@@ -2,10 +2,9 @@
 
 namespace AdventOfCode.Y2021;
 
-public class Day06 : IAdventDay
+public class Day06(string input) : IAdventDay
 {
-	private int[] InputArray { get; }
-	public Day06(string input) => InputArray = input.Replace("\r", "").Split(",").Select(s => Convert.ToInt32(s)).ToArray();
+	private int[] InputArray { get; } = [.. input.Split(",").Select(s => Convert.ToInt32(s))];
 
 	private long SimulateFish(int dayCount)
 	{
@@ -19,7 +18,7 @@ public class Day06 : IAdventDay
 		for (var day = 0; day < dayCount; day++)
 		{
 			var newFish = fishBuckets.First();
-			fishBuckets = fishBuckets.Skip(1).ToList();
+			fishBuckets = [.. fishBuckets.Skip(1)];
 			fishBuckets[6] += newFish;
 			fishBuckets.Add(newFish);
 		}

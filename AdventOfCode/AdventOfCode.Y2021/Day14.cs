@@ -9,7 +9,7 @@ public class Day14 : IAdventDay
 
 	public Day14(string input)
 	{
-		var split = input.Replace("\r", "").Split("\n\n");
+		var split = input.Split("\n\n");
 		InputArray = split[0];
 
 		Insertion = split[1].Split("\n").Select(s =>
@@ -19,7 +19,7 @@ public class Day14 : IAdventDay
 		}).ToDictionary(d => d.Item1, d => d.Item2);
 	}
 
-	private void AddOccurrence(Dictionary<string, long> occurrence, string pair, long frequency)
+	private static void AddOccurrence(Dictionary<string, long> occurrence, string pair, long frequency)
 	{
 		if (occurrence.ContainsKey(pair))
 			occurrence[pair] += frequency;

@@ -9,10 +9,10 @@ public class Day20 : IAdventDay
 
 	public Day20(string input)
 	{
-		var test = input.Replace("\r", "")
+		var test = input
 			.Split("\n\n");
 
-		InputArray = test.First().Select(s => s == '#').ToArray();
+		InputArray = [.. test.First().Select(s => s == '#')];
 
 		var image = test[1].Split("\n");
 
