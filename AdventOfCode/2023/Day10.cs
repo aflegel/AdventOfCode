@@ -1,13 +1,13 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 using System.Data;
 
 namespace AdventOfCode.Y2023;
 
 public class Day10(string input) : IAdventDay
 {
-	private record MapPoint(int X, int Y, char Value, Direction Direction);
-	private char[,] InputArray { get; } = input.Split("\n").To2DArray();
-	private enum Direction { Up, Down, Left, Right };
+	private record MapPoint(int X, int Y, char Value, Direction Direction) : Position2D(X, Y);
+	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 
 	public string Part1()
 	{
@@ -48,21 +48,7 @@ public class Day10(string input) : IAdventDay
 		throw new InvalidDataException();
 	}
 
-	private MapPoint FindStart()
-	{
-		for (var i = 0; i < InputArray.GetLength(0); i++)
-		{
-			for (var j = 0; j < InputArray.GetLength(1); j++)
-			{
-				if (InputArray[i, j] == 'S')
-				{
-					return new MapPoint(i, j, 'S', Direction.Up);
-				}
-			}
-		}
-
-		throw new InvalidDataException();
-	}
+	private MapPoint FindStart() => InputArray.SearchAll('S').Select(s => new MapPoint(s.X, s.Y, 'S', Direction.Up)).First();
 
 	private static bool IsConnected(MapPoint next) => next.Direction switch
 	{
@@ -90,21 +76,12 @@ public class Day10(string input) : IAdventDay
 		_ => throw new Exception()
 	};
 
-	private static (int X, int Y) GetNextPosition(MapPoint i, Direction direction) => direction switch
-	{
-		Direction.Up => (i.X - 1, i.Y),
-		Direction.Down => (i.X + 1, i.Y),
-		Direction.Left => (i.X, i.Y - 1),
-		Direction.Right => (i.X, i.Y + 1),
-		_ => throw new Exception()
-	};
-
 	private MapPoint GetNext(MapPoint i, Direction? setDirection = null)
 	{
 		var dir = setDirection ?? GetNextDirection(i);
-		var (x, y) = GetNextPosition(i, dir);
+		var next = i.Move(dir);
 
-		return new MapPoint(x, y, InputArray[x, y], dir);
+		return new MapPoint(next.X, next.Y, InputArray[next], dir);
 	}
 
 	private bool TryFollow(MapPoint current, out List<MapPoint> path)
@@ -137,18 +114,15 @@ public class Day10(string input) : IAdventDay
 		FixStartSymbol(loop);
 
 		// do the even-odd rule. reference: https://en.wikipedia.org/wiki/Even%E2%80%93odd_rule
-		for (var x = 0; x < InputArray.GetLength(0); x++)
+		foreach (var point in InputArray.Positions())
 		{
-			for (var y = 0; y < InputArray.GetLength(1); y++)
-			{
-				//escape if the point is in the loop
-				if (loop.Any(a => a.X == x && a.Y == y))
-					continue;
-				var item = new MapPoint(x, y, InputArray[x, y], Direction.Up);
-				var dir = GetEscapeDirection(item);
-				if (CountDistinctSegments(loop, item, dir) % 2 == 1)
-					result.Add(item);
-			}
+			//escape if the point is in the loop
+			if (loop.Any(a => a.X == point.X && a.Y == point.Y))
+				continue;
+			var item = new MapPoint(point.X, point.Y, InputArray[point], Direction.Up);
+			var dir = GetEscapeDirection(item);
+			if (CountDistinctSegments(loop, item, dir) % 2 == 1)
+				result.Add(item);
 		}
 
 		return result.Count.ToString();
@@ -156,21 +130,24 @@ public class Day10(string input) : IAdventDay
 
 	private Direction GetEscapeDirection(MapPoint point)
 	{
-		var halfX = InputArray.GetLength(0) / 2;
-		var halfY = InputArray.GetLength(1) / 2;
+		var halfY = InputArray.Height / 2;
+		var halfX = InputArray.Width / 2;
 
 		return (point.X, point.Y) switch
 		{
 			var (x, y) when x < halfX && y < halfY => Direction.Up,
-			var (x, y) when x < halfX && y >= halfY => Direction.Right,
+			var (x, y) when x < halfX && y >= halfY => Direction.Left,
 			var (x, y) when x >= halfX && y >= halfY => Direction.Down,
-			var (x, y) when x >= halfX && y < halfY => Direction.Left,
+			var (x, y) when x >= halfX && y < halfY => Direction.Right,
 			_ => throw new InvalidDataException()
 		};
 	}
 
+	/// <summary>
+	/// This excludes the outside edge of otherwise "In Bounds" points
+	/// </summary>
 	private bool IsPointInvalid(MapPoint point)
-		=> point.X <= 0 || point.X >= InputArray.GetLength(0) - 1 || point.Y <= 0 || point.Y >= InputArray.GetLength(1) - 1;
+		=> point.X <= 0 || point.X >= InputArray.Width - 1 || point.Y <= 0 || point.Y >= InputArray.Height - 1;
 
 	private int CountDistinctSegments(List<MapPoint> loop, MapPoint point, Direction direction)
 	{
@@ -183,8 +160,6 @@ public class Day10(string input) : IAdventDay
 		var next = GetNext(point, direction);
 		while (next != null)
 		{
-			//I think this needs to amend the loop to replace S with its relevant shape
-
 			//current is part of the loop
 			if (loop.Any(a => a.X == next.X && a.Y == next.Y))
 			{
@@ -202,24 +177,20 @@ public class Day10(string input) : IAdventDay
 						{
 							//this is an enclosing parallel
 							count++;
-
 						}
 					}
-
 				}
-				
+
 				else if (TryFindCorner(next, direction, out var corner))
 				{
 					//we are starting a parallel segment
 					saveCornerDirection ??= corner;
-					//continue;
 				}
 				else if (Math.Abs(loop.IndexOf(next) - loop.IndexOf(previous)) != 1)
 				{
 					//throw new Exception();
 					saveCornerDirection = null;
 					count++;
-					//continue;
 				}
 				else
 				{
@@ -228,7 +199,6 @@ public class Day10(string input) : IAdventDay
 				}
 			}
 
-			//detects if the next point will throw
 			if (IsPointInvalid(next))
 				return count;
 
@@ -262,10 +232,9 @@ public class Day10(string input) : IAdventDay
 	{
 		var s = loop.Single(a => a.Value == 'S');
 
-		var first = loop[0];
-		var last = loop[^2];
+		var diff = loop[0] - loop[^2];
 
-		var corectedValue = (first.X - last.X, first.Y - last.Y) switch
+		var corectedValue = (diff.X, diff.Y) switch
 		{
 			(0, _) => '-',
 			(_, 0) => '|',
@@ -276,7 +245,7 @@ public class Day10(string input) : IAdventDay
 			_ => throw new Exception()
 		};
 
-		InputArray[s.X, s.Y] = corectedValue;
+		InputArray[s] = corectedValue;
 	}
 }
 
