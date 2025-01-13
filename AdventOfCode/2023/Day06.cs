@@ -15,7 +15,7 @@ public class Day06 : IAdventDay
 		var times = splits[0].Split(":")[1].Split(" ").Where(w => w.Length != 0).Select(s => Convert.ToInt64(s)).ToArray();
 		var distances = splits[1].Split(":")[1].Split(" ").Where(w => w.Length != 0).Select(s => Convert.ToInt64(s)).ToArray();
 
-		InputArray = times.Select((item, i) => new Race(item, distances[i])).ToArray();
+		InputArray = [.. times.Select((item, i) => new Race(item, distances[i]))];
 
 		//special for part two
 		InputRace = new Race(

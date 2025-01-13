@@ -46,19 +46,19 @@ public partial class Day12(string input) : IAdventDay
 		}
 
 		private static string[] SplitWhenCharactersChange(string input)
-			=> CharacterSplit().Matches(input)
+			=> [.. CharacterSplit().Matches(input)
 				.Cast<Match>()
-				.Select(m => m.Value).ToArray();
+				.Select(m => m.Value)];
 
 		[GeneratedRegex(@"(.)\1*")]
 		private static partial Regex CharacterSplit();
 
 	}
-	private List<SpringGroup> InputArray { get; } = input.Split("\n").Select(s =>
+	private List<SpringGroup> InputArray { get; } = [.. input.Split("\n").Select(s =>
 	{
 		var split = s.Split(" ");
-		return new SpringGroup(split[0], split[1].Split(",").Select(int.Parse).ToArray());
-	}).ToList();
+		return new SpringGroup(split[0], [.. split[1].Split(",").Select(int.Parse)]);
+	})];
 
 	public string Part1()
 	{
@@ -103,7 +103,7 @@ public partial class Day12(string input) : IAdventDay
 
 	private List<SpringGroup> GetUnfoldedResults()
 	{
-		var groups = InputArray.Select(s => new SpringGroup(string.Join("?", Enumerable.Repeat(s.Group, 5)), Enumerable.Repeat(s.Pattern, 5).SelectMany(s => s).ToArray())).ToList();
+		var groups = InputArray.Select(s => new SpringGroup(string.Join("?", Enumerable.Repeat(s.Group, 5)), [.. Enumerable.Repeat(s.Pattern, 5).SelectMany(s => s)])).ToList();
 
 		return groups;
 	}

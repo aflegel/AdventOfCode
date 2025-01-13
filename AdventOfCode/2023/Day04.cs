@@ -9,14 +9,14 @@ public class Day04(string input) : IAdventDay
 		public int Match { get; } = Winners.Intersect(Plays).Count();
 	}
 
-	private Card[] InputArray { get; } = input.Replace("  ", " ").Split("\n")
+	private Card[] InputArray { get; } = [.. input.Replace("  ", " ").Split("\n")
 		.Select(x =>
 		{
 			var split = x.Split(": ")[1].Split(" | ");
 			return new Card(
-				split[0].Split(" ").Select(s => Convert.ToInt32(s)).ToArray(),
-				split[1].Split(" ").Select(s => Convert.ToInt32(s)).ToArray());
-		}).ToArray();
+				[.. split[0].Split(" ").Select(s => Convert.ToInt32(s))],
+				[.. split[1].Split(" ").Select(s => Convert.ToInt32(s))]);
+		})];
 
 	public string Part1()
 	{

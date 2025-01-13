@@ -39,15 +39,15 @@ public class Day05 : IAdventDay
 	{
 		var splits = input.Split("\n\n");
 
-		Seeds = splits[0].Split(": ")[1].Split(" ").Select(s => new SeedPlan(Convert.ToInt64(s))).ToArray();
+		Seeds = [.. splits[0].Split(": ")[1].Split(" ").Select(s => new SeedPlan(Convert.ToInt64(s)))];
 
-		InputArray = splits.Skip(1)
-						.Select(s => new Map(s.Split("\n").Skip(1).Select(ss =>
+		InputArray = [.. splits.Skip(1)
+						.Select(s => new Map([.. s.Split("\n").Skip(1).Select(ss =>
 							{
 								var ranges = ss.Split(" ").ToArray();
 
 								return new RangeMap(Convert.ToInt64(ranges[0]), Convert.ToInt64(ranges[1]), Convert.ToInt32(ranges[2]));
-							}).ToArray())).ToArray();
+							})]))];
 	}
 
 	public string Part1()
@@ -193,6 +193,6 @@ public class Day05 : IAdventDay
 			}
 		}
 
-		return unmapped.Union(remapped).ToArray();
+		return [.. unmapped.Union(remapped)];
 	}
 }

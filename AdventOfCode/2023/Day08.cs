@@ -17,12 +17,12 @@ public class Day08 : IAdventDay
 		var lines = input.Split("\n\n");
 		InputInstructions = lines[0];
 
-		InputArray = lines[1].Split("\n").Select(s =>
+		InputArray = [.. lines[1].Split("\n").Select(s =>
 		{
 			var split = s.Split(" = ");
 			var instructions = split[1].Replace("(", "").Replace(")", "").Split(", ");
 			return new Node(split[0], instructions[0], instructions[1]);
-		}).ToArray();
+		})];
 
 		foreach (var node in InputArray)
 		{

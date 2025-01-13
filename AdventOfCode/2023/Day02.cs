@@ -7,7 +7,7 @@ public class Day02(string input) : IAdventDay
 	private record Draw(int Red, int Green, int Blue);
 	private record Game(int Id, Draw[] Draws);
 
-	private Game[] InputArray { get; } = input.Split("\n").Select(s =>
+	private Game[] InputArray { get; } = [.. input.Split("\n").Select(s =>
 	{
 		static string ParseColour(string[] s, string colour) => s.FirstOrDefault(w => w.Contains(colour))?.Replace(colour, "") ?? "0";
 
@@ -27,7 +27,7 @@ public class Day02(string input) : IAdventDay
 		}).ToArray();
 
 		return new Game(id, list);
-	}).ToArray();
+	})];
 
 	public string Part1()
 	{

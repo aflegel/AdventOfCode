@@ -4,7 +4,7 @@ namespace AdventOfCode.Y2023;
 
 public class Day09(string input) : IAdventDay
 {
-	private int[][] InputArray { get; } = input.Split("\n").Select(s => s.Split(" ").Select(int.Parse).ToArray()).ToArray();
+	private int[][] InputArray { get; } = [.. input.Split("\n").Select(s => s.Split(" ").Select(int.Parse).ToArray())];
 
 	public string Part1()
 	{

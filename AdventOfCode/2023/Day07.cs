@@ -22,7 +22,7 @@ public class Day07(string input) : IAdventDay
 		}
 
 		private static (char card, int count)[] CalculateSort(string cards)
-			=> cards.GroupBy(g => g).OrderByDescending(o => o.Count()).Select(s => (s.Key, s.Count())).ToArray();
+			=> [.. cards.GroupBy(g => g).OrderByDescending(o => o.Count()).Select(s => (s.Key, s.Count()))];
 
 		private string CalculateWild()
 		{
@@ -38,11 +38,11 @@ public class Day07(string input) : IAdventDay
 		public (char card, int count)[] SortingDetails { get; }
 		public (char card, int count)[] SortingDetailsWild { get; }
 	}
-	private Hand[] InputArray { get; } = input.Split("\n").Select(s =>
+	private Hand[] InputArray { get; } = [.. input.Split("\n").Select(s =>
 	{
 		var split = s.Split(" ");
 		return new Hand(split[0], int.Parse(split[1]));
-	}).ToArray();
+	})];
 
 	private class HandTypeComparer : IComparer<Hand>
 	{
