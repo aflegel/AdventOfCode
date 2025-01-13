@@ -1,79 +1,77 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2023;
 
 public class Day17(string input) : IAdventDay
 {
-	private int[,] InputArray { get; } = input.Split('\n').Select(s => s.Select(ss => int.Parse(ss.ToString()))).To2DArray();
-
+	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 	public string Part1()
 	{
-
 		var result = ShortestPath(InputArray);
 
 		return result.ToString();
 	}
 
-	private enum Direction { Right, Down, Left, Up }
-	private record PathNode(int Dist, int X, int Y, Direction LastDir, int Consecutive) : IComparable<PathNode>
-	{
-		public int CompareTo(PathNode other) => other == null ? 1 : Dist.CompareTo(other.Dist);
-	}
 	/// <summary>
 	/// I'm trying to get Copilot to generate this for me.
 	/// It's a modified version of Dijkstra's algorithm.
 	/// </summary>
 	/// <param name="grid"></param>
 	/// <returns></returns>
-	public static int ShortestPath(int[,] grid)
+	public static int ShortestPath(Map2D<char> grid)
 	{
-		var rows = grid.GetLength(0);
-		var cols = grid.GetLength(1);
-		var dist = new int[rows, cols, 4, 3]; // last dimension for lastDir and consecutive
-		for (var i = 0; i < rows; i++)
-			for (var j = 0; j < cols; j++)
-				for (var k = 0; k < 4; k++)
-					for (var l = 0; l < 3; l++)
-						dist[i, j, k, l] = int.MaxValue;
-		dist[0, 0, 0, 0] = grid[0, 0]; // start at top left
-		var minHeap = new SortedSet<(int dist, int x, int y, Direction lastDir, int consecutive)>() { (dist[0, 0, 0, 0], 0, 0, 0, 0) };
-		while (minHeap.Count > 0)
+		Direction[] adjacent = [Direction.Right, Direction.Up, Direction.Left, Direction.Down];
+		var end = new Position2D(grid.Width - 1, grid.Height - 1);
+
+		var minDist = int.MaxValue;
+
+		var visited = new Dictionary<Position2D, int>();
+		var sortedSet = new PriorityQueue<(Position2D, Direction, List<(Position2D, Direction)>), int>();
+		sortedSet.Enqueue((new(0, 0), Direction.UpLeft, []), 0);
+
+		while (sortedSet.TryDequeue(out var state, out var cost))
 		{
-			var (totalCost, x, y, lastDir, consecutive) = minHeap.Min;
-			minHeap.Remove((totalCost, x, y, lastDir, consecutive));
-			foreach (var (dx, dy, dir) in new[] { (0, 1, Direction.Right), (1, 0, Direction.Down), (0, -1, Direction.Up), (-1, 0, Direction.Left) }) // right, down
+			var (current, lastDir, history) = state;
+
+			if (cost >= minDist)
+				continue;
+
+			if (current == end)
 			{
-				// Skip if the current direction is opposite to the last direction
-				if ((lastDir, dir) switch
-				{
-					(Direction.Right, Direction.Left) => true,
-					(Direction.Left, Direction.Right) => true,
-					(Direction.Up, Direction.Down) => true,
-					(Direction.Down, Direction.Up) => true,
-					_ => false
-				})
+				if (cost < minDist)
+					minDist = cost;
+
+				continue;
+			}
+			visited.TryAdd(current, cost);
+
+			foreach (var dir in adjacent)
+			{
+				if (lastDir.IsOpposite(dir))
 					continue;
 
-				int nx = x + dx, ny = y + dy;
-				if (nx >= 0 && nx < rows && ny >= 0 && ny < cols)
-				{
-					var newCost = totalCost + grid[nx, ny];
-					var nconsecutive = (dir == lastDir) ? consecutive + 1 : 0;
-					if (nconsecutive < 3 && newCost < dist[nx, ny, (int)dir, nconsecutive])
-					{
-						minHeap.Remove((dist[nx, ny, (int)dir, nconsecutive], nx, ny, dir, nconsecutive));
-						dist[nx, ny, (int)dir, nconsecutive] = newCost;
-						minHeap.Add((newCost, nx, ny, dir, nconsecutive));
-					}
-				}
+				var next = current.Move(dir);
+				if (grid.OutOfBounds(next))
+					continue;
+
+				var newCost = cost + grid[next].ToInt();
+				if (newCost >= minDist)
+					continue;
+
+				if (visited.TryGetValue(next, out var prev) && prev < newCost)
+					continue;
+
+				var limitReached = CalculateConsecutive(history, dir);
+				if (!limitReached)
+					sortedSet.Enqueue((next, dir, [.. history, (next, dir)]), newCost);
 			}
 		}
-		var minDist = int.MaxValue;
-		for (var i = 0; i < 4; i++)
-			for (var j = 0; j < 3; j++)
-				minDist = Math.Min(minDist, dist[rows - 1, cols - 1, i, j]); // end at bottom right
+
 		return minDist;
 	}
+
+	private static bool CalculateConsecutive(List<(Position2D, Direction)> list, Direction dir) => list.Count >= 3 && list[^3..].All(a => a.Item2 == dir);
 
 	public string Part2()
 	{
