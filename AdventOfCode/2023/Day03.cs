@@ -1,50 +1,37 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2023;
 
-public class Day03 : IAdventDay
+public class Day03(string input) : IAdventDay
 {
-	public Day03(string input)
-	{
-		var rows = input.ReplaceLineEndings("\n").Split("\n");
-
-		InputArray = new char[rows.Length, rows.First().Length];
-
-		for (var i = 0; i < rows.Length; i++)
-		{
-			for (var j = 0; j < rows[i].Length; j++)
-			{
-				InputArray[i, j] = rows[i][j];
-			}
-		}
-	}
-
 	private static readonly string SymbolSet = "/$*#%&@+-=";
 	private static readonly string NumberSet = "0123456789";
 
-	private char[,] InputArray { get; }
+	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 
 	public string Part1()
 	{
 		var partSum = 0;
 
-		for (var i = 0; i < InputArray.GetLength(0); i++)
+		for (var y = 0; y < InputArray.Height; y++)
 		{
-			for (var j = 0; j < InputArray.GetLength(1); j++)
+			for (var x = 0; x < InputArray.Width; x++)
 			{
+				var pos = new Position2D(x, y);
 				// found start
-				if (NumberSet.Contains(InputArray[i, j]))
+				if (NumberSet.Contains(InputArray[pos]))
 				{
 					// peek to end
-					var result = FindEnd(i, j);
+					var result = FindEnd(pos);
 					// search
-					if (CheckForAdjacentSymbol(i, j, result.Length))
+					if (CheckForAdjacentSymbol(pos, result.Length))
 					{
 						partSum += Convert.ToInt32(result);
 					}
 
 					// update j
-					j += result.Length;
+					x += result.Length;
 				}
 			}
 		}
@@ -52,40 +39,38 @@ public class Day03 : IAdventDay
 		return partSum.ToString();
 	}
 
-	private bool CheckForAdjacentSymbol(int x, int y, int length)
+	private bool CheckForAdjacentSymbol(Position2D position, int length)
 	{
-		for (var i = x - 1; i < x + 2; i++)
+		for (var y = position.Y - 1; y < position.Y + 2; y++)
 		{
-			for (var j = y - 1; j < y + length + 1; j++)
+			for (var x = position.X - 1; x < position.X + length + 1; x++)
 			{
-				if (i < 0 || j < 0 || i >= InputArray.GetLength(0) || j >= InputArray.GetLength(1))
-				{
+				var pos = new Position2D(x, y);
+				if (InputArray.OutOfBounds(pos))
 					continue;
-				}
 
-				if (SymbolSet.Contains(InputArray[i, j]))
-				{
+				if (SymbolSet.Contains(InputArray[pos]))
 					return true;
-				}
 			}
 		}
 
 		return false;
 	}
 
-	private string FindEnd(int x, int y)
+	private string FindEnd(Position2D position)
 	{
 		var length = "";
 
 		while (true)
 		{
-			if (NumberSet.Contains(InputArray[x, y]))
-				length += InputArray[x, y];
+			if (NumberSet.Contains(InputArray[position]))
+				length += InputArray[position];
 			else
 				return length;
-			y++;
 
-			if (y >= InputArray.GetLength(1))
+			position = position.Move(Direction.Right);
+
+			if (InputArray.OutOfBounds(position))
 				return length;
 		}
 	}
@@ -94,42 +79,34 @@ public class Day03 : IAdventDay
 	{
 		var partSum = 0;
 
-		for (var i = 0; i < InputArray.GetLength(0); i++)
+		foreach (var pos in InputArray.SearchAll('*'))
 		{
-			for (var j = 0; j < InputArray.GetLength(1); j++)
-			{
-				// found start
-				if (InputArray[i, j] == '*')
-				{
-					var numbers = FindNumbers(i, j);
+			var numbers = FindNumbers(pos);
 
-					if (numbers.Count() == 2)
-						partSum += numbers[0] * numbers[1];
-				}
-			}
+			if (numbers.Length == 2)
+				partSum += numbers[0] * numbers[1];
 		}
 
 		return partSum.ToString();
 	}
 
-	private int[] FindNumbers(int x, int y)
+	private int[] FindNumbers(Position2D position)
 	{
 		List<int> count = [];
 		var previousWasNumber = false;
 
-		for (var i = x - 1; i < x + 2; i++)
+		for (var y = position.Y - 1; y < position.Y + 2; y++)
 		{
-			for (var j = y - 1; j < y + 2; j++)
+			for (var x = position.X - 1; x < position.X + 2; x++)
 			{
-				if (i < 0 || j < 0 || i >= InputArray.GetLength(0) || j >= InputArray.GetLength(1))
-				{
+				var pos = new Position2D(x, y);
+				if (InputArray.OutOfBounds(pos))
 					continue;
-				}
 
-				if (NumberSet.Contains(InputArray[i, j]))
+				if (NumberSet.Contains(InputArray[pos]))
 				{
 					if (!previousWasNumber)
-						count.Add(FindNumber(i, j));
+						count.Add(FindNumber(pos));
 					previousWasNumber = true;
 				}
 				else
@@ -141,17 +118,17 @@ public class Day03 : IAdventDay
 		return [.. count];
 	}
 
-	private int FindNumber(int x, int y)
+	private int FindNumber(Position2D position)
 	{
 		while (true)
 		{
-			if (y < 0)
-				return Convert.ToInt32(FindEnd(x, 0));
+			if (InputArray.OutOfBounds(position))
+				return Convert.ToInt32(FindEnd(new(0, position.Y)));
 
-			if (NumberSet.Contains(InputArray[x, y]))
-				y--;
+			if (NumberSet.Contains(InputArray[position]))
+				position = position.Move(Direction.Left);
 			else
-				return Convert.ToInt32(FindEnd(x, y + 1));
+				return Convert.ToInt32(FindEnd(new(position.X + 1, position.Y)));
 		}
 	}
 }
