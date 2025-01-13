@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 
 namespace AdventOfCode.Map;
 
-public class Map2D<T>
+public class Map2D<T> : IEnumerable<(Position2D index, T value)>, IEnumerable
 {
     private readonly T[,] _map;
 
@@ -33,6 +34,8 @@ public class Map2D<T>
         Fill(defaultValue);
     }
 
+    public Map2D(IEnumerable<IEnumerable<T>> map) => _map = map.To2DArray();
+
     public void Fill(T value)
     {
         for (var y = 0; y < Height; y++)
@@ -53,6 +56,28 @@ public class Map2D<T>
                 yield return new(x, y);
             }
         }
+    }
+
+    public IEnumerable<(Position2D, T)> Row(int y)
+    {
+        for (var x = 0; x < Width; ++x)
+            yield return (new(x, y), _map[y, x]);
+    }
+    public IEnumerable<IEnumerable<(Position2D, T)>> Rows()
+    {
+        for (var j = 0; j < Height; j++)
+            yield return Row(j);
+    }
+
+    public IEnumerable<(Position2D, T)> Column(int x)
+    {
+        for (var y = 0; y < Height; ++y)
+            yield return (new(x, y), _map[y, x]);
+    }
+    public IEnumerable<IEnumerable<(Position2D, T)>> Columns()
+    {
+        for (var x = 0; x < Width; x++)
+            yield return Column(x);
     }
 
     public IEnumerable<Position2D> SearchAll(T target)
@@ -88,6 +113,8 @@ public class Map2D<T>
     }
 
     public Map2D<T> Clone() => new Map2D<T>(_map.Clone() as T[,]);
+    public IEnumerator<(Position2D index, T value)> GetEnumerator() => Positions().Select(s => (s, _map[s.Y, s.X])).GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
 internal static class EnumerableExtensions
