@@ -1,106 +1,64 @@
 ﻿using AdventOfCode.Core;
-using System.Text;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2023;
 
 public class Day14(string input) : IAdventDay
 {
-	private enum Direction { North, East, South, West }
-	private char[,] InputArray { get; } = input.Split("\n").To2DArray();
+	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 
 	public string Part1()
 	{
-		var grid = Tilt(InputArray, Direction.North);
+		var grid = Tilt(InputArray, Direction.Up);
 		var result = CalculateLoad(grid);
 
 		return result.ToString();
 	}
 
-	private static char[,] Tilt(char[,] grid, Direction direction)
+	private static Map2D<char> Tilt(Map2D<char> grid, Direction direction)
 	{
-		void MoveRock(int x, int y, Direction direction)
+		void MoveRock(Position2D position, Direction direction)
 		{
-			grid[x, y] = '.';
+			grid[position] = '.';
+			var next = position;
 
-			switch (direction)
+			while (!grid.OutOfBounds(next) && grid[next] == '.')
 			{
-				case Direction.North:
-					while (x > 0 && grid[x - 1, y] == '.')
-						x--;
-					break;
-				case Direction.South:
-					while (x < grid.GetLength(0) - 1 && grid[x + 1, y] == '.')
-						x++;
-					break;
-				case Direction.East:
-					while (y < grid.GetLength(1) - 1 && grid[x, y + 1] == '.')
-						y++;
-					break;
-				case Direction.West:
-					while (y > 0 && grid[x, y - 1] == '.')
-						y--;
-					break;
+				position = next;
+				next = position.Move(direction);
 			}
 
-			grid[x, y] = 'O';
+			grid[position] = 'O';
 		}
 
-		if (direction is Direction.North or Direction.West)
+		if (direction is Direction.Up or Direction.Left)
 		{
-			for (var x = 0; x < grid.GetLength(0); x++)
-			{
-				for (var y = 0; y < grid.GetLength(1); y++)
-				{
-					if (grid[x, y] == 'O')
-					{
-						MoveRock(x, y, direction);
-					}
-				}
-			}
+			var rocks = grid.SearchAll('O').OrderBy(o => o.Y).ThenBy(t => t.X).ToList();
+			foreach (var rock in rocks)
+				MoveRock(rock, direction);
 		}
 		else
 		{
-			for (var x = grid.GetLength(0) - 1; x >= 0; x--)
-			{
-				for (var y = grid.GetLength(1) - 1; y >= 0; y--)
-				{
-					if (grid[x, y] == 'O')
-					{
-						MoveRock(x, y, direction);
-					}
-				}
-			}
+			var rocks = grid.SearchAll('O').OrderByDescending(o => o.Y).ThenByDescending(t => t.X).ToList();
+			foreach (var rock in rocks)
+				MoveRock(rock, direction);
 		}
 
 		return grid;
 	}
 
-	private static int CalculateLoad(char[,] grid)
-	{
-		var load = 0;
-
-		for (var x = 0; x < grid.GetLength(0); x++)
-		{
-			for (var y = 0; y < grid.GetLength(1); y++)
-			{
-				if (grid[x, y] == 'O')
-					load += grid.GetLength(0) - x;
-			}
-		}
-
-		return load;
-	}
+	private static int CalculateLoad(Map2D<char> grid) => grid.SearchAll('O').Select(s => grid.Height - s.Y).Sum();
 
 	public string Part2()
 	{
-		static int GetPatternMath(char[,] grid)
+		static int GetPatternMath(Map2D<char> grid)
 		{
 			List<string> pattern = [];
 			string? current;
 			while (true)
 			{
 				grid = Cycle(grid);
-				current = grid.MakeString();
+				current = grid.ToString();
 				if (pattern.Contains(current))
 					break;
 				else
@@ -122,42 +80,12 @@ public class Day14(string input) : IAdventDay
 		return result.ToString();
 	}
 
-	private static char[,] Cycle(char[,] grid)
+	private static Map2D<char> Cycle(Map2D<char> grid)
 	{
-		Tilt(grid, Direction.North);
-		Tilt(grid, Direction.West);
-		Tilt(grid, Direction.South);
-		Tilt(grid, Direction.East);
+		Tilt(grid, Direction.Up);
+		Tilt(grid, Direction.Left);
+		Tilt(grid, Direction.Down);
+		Tilt(grid, Direction.Right);
 		return grid;
-	}
-}
-
-public static class PrintExtensions
-{
-	public static void PrintToConsole(this char[,] array)
-	{
-		for (var i = 0; i < array.GetLength(0); i++)
-		{
-			for (var j = 0; j < array.GetLength(1); j++)
-			{
-				Console.Write(array[i, j]);
-			}
-			Console.WriteLine();
-		}
-	}
-
-	public static string MakeString(this char[,] array)
-	{
-		var result = new StringBuilder();
-		for (var i = 0; i < array.GetLength(0); i++)
-		{
-			for (var j = 0; j < array.GetLength(1); j++)
-			{
-				result.Append(array[i, j]);
-			}
-			result.Append('\n');
-		}
-
-		return result.ToString();
 	}
 }
