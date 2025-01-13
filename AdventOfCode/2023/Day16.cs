@@ -1,35 +1,23 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2023;
 
 public class Day16(string input) : IAdventDay
 {
-	private enum Direction { Up, Down, Left, Right }
-	private record Point(int X, int Y);
-	private char[,] InputArray { get; } = input.Split('\n').To2DArray();
+	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 
 	public string Part1()
 	{
-		var energized = TracePath(new Point(0, 0), Direction.Right);
+		var energized = TracePath(new Position2D(0, 0), Direction.Right);
 
 		return energized.Count.ToString();
 	}
 
-	private HashSet<Point> TracePath(Point entry, Direction direction)
+	private HashSet<Position2D> TracePath(Position2D entry, Direction direction)
 	{
-		HashSet<Point> energized = [];
-		HashSet<(Point, Direction)> uniqueTurns = [];
-
-		bool IsPointInvalid(Point point) => point.X < 0 || point.X >= InputArray.GetLength(0) || point.Y < 0 || point.Y >= InputArray.GetLength(1);
-
-		static Point GetNextPosition(Point i, Direction direction) => direction switch
-		{
-			Direction.Up => new(i.X - 1, i.Y),
-			Direction.Down => new(i.X + 1, i.Y),
-			Direction.Left => new(i.X, i.Y - 1),
-			Direction.Right => new(i.X, i.Y + 1),
-			_ => throw new Exception()
-		};
+		HashSet<Position2D> energized = [];
+		HashSet<(Position2D, Direction)> uniqueTurns = [];
 
 		static Direction GetNextDirection(char c, Direction direction) => (c, direction) switch
 		{
@@ -46,41 +34,41 @@ public class Day16(string input) : IAdventDay
 			_ => direction
 		};
 
-		void Traverse(Point entry, Direction direction)
+		void Traverse(Position2D entry, Direction direction)
 		{
 			var current = entry;
 			var previousDirection = direction;
 			//uses a loop instead of recursion to avoid stack overflow
-			while (!IsPointInvalid(current))
+			while (!InputArray.OutOfBounds(current))
 			{
 				energized.Add(current);
-				var nextDirection = GetNextDirection(InputArray[current.X, current.Y], previousDirection);
+				var nextDirection = GetNextDirection(InputArray[current], previousDirection);
 
 				if (uniqueTurns.Contains((current, nextDirection)))
 					return;
 
-				if (InputArray[current.X, current.Y] == '-' && nextDirection != previousDirection)
+				if (InputArray[current] == '-' && nextDirection != previousDirection)
 				{
 					if (!uniqueTurns.Contains((current, Direction.Left)))
 					{
 						uniqueTurns.Add((current, Direction.Left));
-						Traverse(GetNextPosition(current, Direction.Left), Direction.Left);
+						Traverse(current.Move(Direction.Left), Direction.Left);
 					}
 				}
-				else if (InputArray[current.X, current.Y] == '|' && nextDirection != previousDirection)
+				else if (InputArray[current] == '|' && nextDirection != previousDirection)
 				{
 					if (!uniqueTurns.Contains((current, Direction.Up)))
 					{
 						uniqueTurns.Add((current, Direction.Up));
-						Traverse(GetNextPosition(current, Direction.Up), Direction.Up);
+						Traverse(current.Move(Direction.Up), Direction.Up);
 					}
 				}
-				else if (InputArray[current.X, current.Y] is '/' or '\\')
+				else if (InputArray[current] is '/' or '\\')
 				{
 					uniqueTurns.Add((current, nextDirection));
 				}
 
-				current = GetNextPosition(current, nextDirection);
+				current = current.Move(nextDirection);
 				previousDirection = nextDirection;
 			}
 		}
@@ -91,13 +79,13 @@ public class Day16(string input) : IAdventDay
 
 	public string Part2()
 	{
-		var x = InputArray.GetLength(0) - 1;
-		var y = InputArray.GetLength(1) - 1;
+		var x = InputArray.Width - 1;
+		var y = InputArray.Height - 1;
 
-		var results = Enumerable.Range(0, x + 1).Select(s => (new Point(s, 0), Direction.Right))
-			.Concat(Enumerable.Range(0, y + 1).Select(s => (new Point(0, s), Direction.Down)))
-			.Concat(Enumerable.Range(0, x + 1).Select(s => (new Point(s, y), Direction.Left)))
-			.Concat(Enumerable.Range(0, y + 1).Select(s => (new Point(x, s), Direction.Up)))
+		var results = Enumerable.Range(0, x + 1).Select(s => (new Position2D(s, 0), Direction.Down))
+			.Concat(Enumerable.Range(0, y + 1).Select(s => (new Position2D(0, s), Direction.Right)))
+			.Concat(Enumerable.Range(0, x + 1).Select(s => (new Position2D(s, y), Direction.Up)))
+			.Concat(Enumerable.Range(0, y + 1).Select(s => (new Position2D(x, s), Direction.Left)))
 			.Max(s => TracePath(s.Item1, s.Item2).Count);
 
 		return results.ToString();
