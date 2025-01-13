@@ -58,23 +58,23 @@ public class Map2D<T> : IEnumerable<(Position2D index, T value)>, IEnumerable
         }
     }
 
-    public IEnumerable<(Position2D, T)> Row(int y)
+    public IEnumerable<(Position2D index, T value)> Row(int y)
     {
         for (var x = 0; x < Width; ++x)
             yield return (new(x, y), _map[y, x]);
     }
-    public IEnumerable<IEnumerable<(Position2D, T)>> Rows()
+    public IEnumerable<IEnumerable<(Position2D index, T value)>> Rows()
     {
         for (var j = 0; j < Height; j++)
             yield return Row(j);
     }
 
-    public IEnumerable<(Position2D, T)> Column(int x)
+    public IEnumerable<(Position2D index, T value)> Column(int x)
     {
         for (var y = 0; y < Height; ++y)
             yield return (new(x, y), _map[y, x]);
     }
-    public IEnumerable<IEnumerable<(Position2D, T)>> Columns()
+    public IEnumerable<IEnumerable<(Position2D index, T value)>> Columns()
     {
         for (var x = 0; x < Width; x++)
             yield return Column(x);
