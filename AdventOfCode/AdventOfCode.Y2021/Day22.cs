@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using AdventOfCode.Core;
 
-namespace AdventOfCode;
+namespace AdventOfCode.Y2021;
 
 public class Day22 : IAdventDay
 {

@@ -2,7 +2,7 @@
 using AdventOfCode.Y2021;
 using FluentAssertions;
 
-namespace AdventOfCodeTests;
+namespace AdventOfCode.Y2021Tests;
 
 public class Day01Tests
 {
