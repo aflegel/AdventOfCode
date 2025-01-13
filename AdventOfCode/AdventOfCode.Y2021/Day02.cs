@@ -4,32 +4,21 @@ namespace AdventOfCode.Y2021;
 
 public class Day02(string input) : IAdventDay
 {
-	private enum Direction
-	{
-		Forward,
-		Down,
-		Up,
-	}
-
-	private class Instruction
-	{
-		public Direction Direction { get; init; }
-		public int Scalar { get; init; }
-	}
+	private enum Direction { Forward, Down, Up, }
+	private record Instruction(Direction Direction, int Scalar);
 
 	private List<Instruction> InputArray { get; } = [.. input.Split("\n").Select(s => {
 			var split = s.Split(' ');
-			return new Instruction
-			{
-				Direction = split[0] switch
+			return new Instruction(
+				split[0] switch
 				{
 					"forward" => Direction.Forward,
 					"down" => Direction.Down,
 					"up" => Direction.Up,
 					_ => throw new NotImplementedException()
 				},
-				Scalar = Convert.ToInt32(split[1])
-			};
+				int.Parse(split[1])
+			);
 		})];
 
 	public string Part1()
