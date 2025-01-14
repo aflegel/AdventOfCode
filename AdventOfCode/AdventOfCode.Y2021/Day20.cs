@@ -1,39 +1,20 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2021;
 
-public class Day20 : IAdventDay
+public class Day20(string input) : IAdventDay
 {
-	private bool[] InputArray { get; }
-	private bool[,] InputImage { get; }
-
-	public Day20(string input)
-	{
-		var test = input
-			.Split("\n\n");
-
-		InputArray = [.. test.First().Select(s => s == '#')];
-
-		var image = test[1].Split("\n");
-
-		InputImage = new bool[image.Length, image[0].Length];
-
-		for (var i = 0; i < image.Length; i++)
-		{
-			for (var j = 0; j < image[i].Length; j++)
-			{
-				InputImage[i, j] = image[i][j] == '#';
-			}
-		}
-	}
+	private bool[] InputArray { get; } = [.. input.Split("\n\n")[0].Select(s => s == '#')];
+	private Map2D<bool> InputImage { get; } = new Map2D<bool>(input.Split("\n\n")[1].Split('\n').Select(s => s.Select(ss => ss == '#')));
 
 	private class World
 	{
 		public bool Background { get; init; }
 
-		public List<Coordinate> Coordinates { get; init; }
+		public List<Position2D> Coordinates { get; init; }
 
-		public bool Get(int x, int y) => Coordinates.Contains(new Coordinate(x, y)) ? !Background : Background;
+		public bool Get(Position2D position) => Coordinates.Contains(position) ? !Background : Background;
 
 		public (int x1, int y1, int x2, int y2) BoundingBox
 		{
@@ -47,31 +28,29 @@ public class Day20 : IAdventDay
 				return (x1, y1, x2, y2);
 			}
 		}
-
 	}
 
-	private record Coordinate(int X, int Y);
-
-	private static IEnumerable<bool> ReadIndex(World input, int x, int y)
+	private static IEnumerable<bool> ReadIndex(World input, Position2D position)
 	{
-		yield return input.Get(x - 1, y - 1);
-		yield return input.Get(x - 1, y);
-		yield return input.Get(x - 1, y + 1);
+		//order matters here, left to right, top to bottom
+		yield return input.Get(position.Move(Direction.UpLeft));
+		yield return input.Get(position.Move(Direction.Up));
+		yield return input.Get(position.Move(Direction.UpRight));
 
-		yield return input.Get(x, y - 1);
-		yield return input.Get(x, y);
-		yield return input.Get(x, y + 1);
+		yield return input.Get(position.Move(Direction.Left));
+		yield return input.Get(position);
+		yield return input.Get(position.Move(Direction.Right));
 
-		yield return input.Get(x + 1, y - 1);
-		yield return input.Get(x + 1, y);
-		yield return input.Get(x + 1, y + 1);
+		yield return input.Get(position.Move(Direction.DownLeft));
+		yield return input.Get(position.Move(Direction.Down));
+		yield return input.Get(position.Move(Direction.DownRight));
 	}
 
-	private static int GetIndex(World input, int x, int y)
+	private static int GetIndex(World input, Position2D position)
 	{
 		var index = 0;
 
-		var test = ReadIndex(input, x, y);
+		var test = ReadIndex(input, position);
 
 		foreach (var bit in test)
 		{
@@ -87,22 +66,22 @@ public class Day20 : IAdventDay
 	{
 		var box = world.BoundingBox;
 
-		var backgroundIndex = GetIndex(world, -1000, -1000);
+		var backgroundIndex = GetIndex(world, new Position2D(-1000, -1000));
 
 		var world2 = new World
 		{
 			Background = InputArray[backgroundIndex],
-			Coordinates = new List<Coordinate>(),
+			Coordinates = [],
 		};
-
 
 		for (var x = box.x1 - 1; x < box.x2 + 2; x++)
 		{
 			for (var y = box.y1 - 1; y < box.y2 + 2; y++)
 			{
-				var index = GetIndex(world, x, y);
+				var pos = new Position2D(x, y);
+				var index = GetIndex(world, pos);
 				if (InputArray[index] != world2.Background)
-					world2.Coordinates.Add(new Coordinate(x, y));
+					world2.Coordinates.Add(pos);
 			}
 		}
 
@@ -114,22 +93,13 @@ public class Day20 : IAdventDay
 		var world = new World
 		{
 			Background = false,
-			Coordinates = new List<Coordinate>(),
+			Coordinates = [.. InputImage.Where(w => w.value).Select(s => s.index)]
 		};
 
-		for (var i = 0; i < InputImage.GetLength(0); i++)
-		{
-			for (var j = 0; j < InputImage.GetLength(1); j++)
-			{
-				if (InputImage[i, j])
-					world.Coordinates.Add(new Coordinate(i, j));
-			}
-		}
-
 		world = Process(world);
 		world = Process(world);
 
-		return world.Coordinates.Count().ToString();
+		return world.Coordinates.Count.ToString();
 	}
 
 	public string Part2()
@@ -137,24 +107,15 @@ public class Day20 : IAdventDay
 		var world = new World
 		{
 			Background = false,
-			Coordinates = new List<Coordinate>(),
+			Coordinates = [.. InputImage.Where(w => w.value).Select(s => s.index)]
 		};
 
-		for (var i = 0; i < InputImage.GetLength(0); i++)
-		{
-			for (var j = 0; j < InputImage.GetLength(1); j++)
-			{
-				if (InputImage[i, j])
-					world.Coordinates.Add(new Coordinate(i, j));
-			}
-		}
-
-		for(var i = 0; i < 50; i++)
+		for (var i = 0; i < 50; i++)
 		{
 			world = Process(world);
 			Console.WriteLine(i);
 		}
 
-		return world.Coordinates.Count().ToString();
+		return world.Coordinates.Count.ToString();
 	}
 }
