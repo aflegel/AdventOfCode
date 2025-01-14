@@ -4,20 +4,13 @@ namespace AdventOfCode.Y2021;
 
 public class Day08(string input) : IAdventDay
 {
-	private record SegmentDisplay
-	{
-		public string[] Encoding { get; set; }
-		public string[] Display { get; set; }
-	}
+	private record SegmentDisplay(string[] Encoding, string[] Display);
 
-	private SegmentDisplay[] InputArray { get; }= [.. input.Split("\n").Select(s =>
+	private SegmentDisplay[] InputArray { get; } = [.. input.Split("\n").Select(s =>
 	{
 		var record = s.Split("|");
-		return new SegmentDisplay
-		{
-			Encoding = [.. record[0].Split(" ").Where(w => w.Length > 0)],
-			Display = [.. record[1].Split(" ").Where(w => w.Length > 0)]
-		};
+		return new SegmentDisplay([.. record[0].Split(" ").Where(w => w.Length > 0)],
+			[.. record[1].Split(" ").Where(w => w.Length > 0)]);
 	})];
 
 	private readonly int[] uniqueDigits = [2, 3, 4, 7];
@@ -27,7 +20,7 @@ public class Day08(string input) : IAdventDay
 	public string Part2()
 	{
 		var sum = 0;
-		foreach(var item in InputArray)
+		foreach (var item in InputArray)
 		{
 			var groups = item.Encoding.GroupBy(w => w.Length).ToDictionary(key => key.Key, values => values.ToArray());
 

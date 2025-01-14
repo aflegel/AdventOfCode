@@ -28,7 +28,7 @@ public class Day07(string input) : IAdventDay
 		var output = int.MaxValue;
 		foreach (var i in range)
 		{
-			var sum = InputArray.Sum(s =>  Enumerable.Range(1, Math.Abs(s - i)).Sum(ss => ss));
+			var sum = InputArray.Sum(s =>  Enumerable.Range(1, Math.Abs(s - i)).Sum());
 			if (sum < output)
 			{
 				output = sum;
