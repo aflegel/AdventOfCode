@@ -1,80 +1,54 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2021;
 
-public class Day13 : IAdventDay
+public class Day13(string input) : IAdventDay
 {
-	private enum Fold
-	{
-		X,
-		Y,
-	}
-	private (int x, int y)[] InputArray { get; }
-	private (Fold fold, int i)[] FoldArray { get; }
-
-	public Day13(string input)
-	{
-		var split = input.Split("\n\n");
-		InputArray = [.. split[0].Split("\n").Select(s =>
+	private enum Fold { X, Y, }
+	private Position2D[] InputArray { get; } = [.. input.Split("\n\n")[0].Split("\n").Select(s =>
 		{
 			var temp = s.Split(",");
-			return (Convert.ToInt32(temp[0]), Convert.ToInt32(temp[1]));
+			return new Position2D(int.Parse(temp[0]), int.Parse(temp[1]));
 		})];
 
-		FoldArray = [.. split[1].Split("\n").Select(s =>
+	private (Fold fold, int i)[] FoldArray { get; } = [.. input.Split("\n\n")[1].Split("\n").Select(s =>
 		{
 			var temp = s.Split("=");
-			return (temp[0].Contains('x') ? Fold.X : Fold.Y, Convert.ToInt32(temp[1]));
+			return (temp[0].Contains('x') ? Fold.X : Fold.Y, int.Parse(temp[1]));
 		})];
 
-		Console.WriteLine($"X: {InputArray.Max(m => m.x)} - {CalculatePageSize(Fold.X)}");
-		Console.WriteLine($"Y: {InputArray.Max(m => m.y)} - {CalculatePageSize(Fold.Y)}");
-	}
-
-	private bool[,] BuildPage()
+	private Map2D<bool> BuildPage()
 	{
-		var map = new bool[CalculatePageSize(Fold.X), CalculatePageSize(Fold.Y)];
-
-		foreach (var (x, y) in InputArray)
-		{
-			map[x, y] = true;
-		}
-
+		var map = new Map2D<bool>(CalculatePageSize(Fold.X), CalculatePageSize(Fold.Y), false);
+		foreach (var i in InputArray)
+			map[i] = true;
 		return map;
 	}
 
 	private int CalculatePageSize(Fold fold) => FoldArray.Where(w => w.fold == fold).Max(m => m.i) * 2 + 1;
 
-	private static bool[,] FoldPage(bool[,] page, Fold fold, int position)
+	private static Map2D<bool> FoldPage(Map2D<bool> page, Fold fold, int position)
 	{
-		var oldX = page.GetLength(0);
-		var oldY = page.GetLength(1);
+		var oldX = page.Width;
+		var oldY = page.Height;
 
-		var newX = fold == Fold.X ? position : oldX;
-		var newY = fold == Fold.Y ? position : oldY;
+		var newPage = new Map2D<bool>(fold == Fold.X ? position : oldX, fold == Fold.Y ? position : oldY);
 
-		var newPage = new bool[newX, newY];
-
-		for (var j = 0; j < newY; j++)
+		foreach (var pos in newPage.Positions())
 		{
-			for (var i = 0; i < newX; i++)
-			{
-				newPage[i, j] = page[i, j] | page[fold == Fold.X ? oldX - i - 1 : i, fold == Fold.Y ? oldY - j - 1 : j];
-			}
+			var reflection = new Position2D(fold == Fold.X ? oldX - pos.X - 1 : pos.X, fold == Fold.Y ? oldY - pos.Y - 1 : pos.Y);
+			newPage[pos] = page[pos] | page[reflection];
 		}
 
 		return newPage;
 	}
 
-	private static void Render(bool[,] page)
+	private static void Render(Map2D<bool> page)
 	{
-		for (var i = 0; i < page.GetLength(1); i++)
+		foreach (var row in page.Rows())
 		{
-			for (var j = 0; j < page.GetLength(0); j++)
-			{
-				Console.Write(page[j, i] ? "#" : " ");
-			}
-			Console.WriteLine();
+			Console.WriteLine(string.Join("", row.Select(s => s.value ? "#" : " ")));
 		}
 	}
 
@@ -83,7 +57,7 @@ public class Day13 : IAdventDay
 		var page = BuildPage();
 		var fold = FoldArray.First();
 		page = FoldPage(page, fold.fold, fold.i);
-		return page.Cast<bool>().Count(s => s == true).ToString();
+		return page.Count(s => s.value).ToString();
 	}
 
 	public string Part2()
@@ -93,6 +67,6 @@ public class Day13 : IAdventDay
 			page = FoldPage(page, fold.fold, fold.i);
 
 		Render(page);
-		return page.Cast<bool>().Count(s => s == true).ToString();
+		return page.Count(s => s.value).ToString();
 	}
 }
