@@ -1,71 +1,39 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2021;
 
-public class Day11 : IAdventDay
+public class Day11(string input) : IAdventDay
 {
-	private int[,] InputArray { get; }
-	public Day11(string input)
+	private Map2D<int> Grid { get; init; } = new Map2D<int>(input.Split("\n").Select(s => s.Select(ss => ss.ToInt())));
+
+	private IEnumerable<Position2D> GetNeighbours(Position2D coordinates)
 	{
-		var temp = input.Split("\n");
-		InputArray = new int[10, 10];
-		for (var i = 0; i < temp.Length; i++)
+		foreach (var dir in Enum.GetValues<Direction>())
 		{
-			for (var j = 0; j < temp[i].Length; j++)
-			{
-				InputArray[i, j] = Convert.ToInt32($"{temp[i][j]}");
-			}
+			var next = coordinates.Move(dir);
+			if (!Grid.OutOfBounds(next))
+				yield return next;
 		}
-	}
-
-	private IEnumerable<(int x, int y)> GetNeighbours((int x, int y) coordinates)
-	{
-		var width = InputArray.GetLength(0);
-		var height = InputArray.GetLength(1);
-
-		//orthoganal
-		if (coordinates.x > 0)
-			yield return (coordinates.x - 1, coordinates.y);
-		if (coordinates.x < width - 1)
-			yield return (coordinates.x + 1, coordinates.y);
-		if (coordinates.y > 0)
-			yield return (coordinates.x, coordinates.y - 1);
-		if (coordinates.y < height - 1)
-			yield return (coordinates.x, coordinates.y + 1);
-
-		//diagonal
-		if (coordinates.x > 0 && coordinates.y > 0)
-			yield return (coordinates.x - 1, coordinates.y - 1);
-		if (coordinates.x > 0 && coordinates.y < height - 1)
-			yield return (coordinates.x - 1, coordinates.y + 1);
-		if (coordinates.x < width - 1 && coordinates.y > 0)
-			yield return (coordinates.x + 1, coordinates.y - 1);
-		if (coordinates.x < width - 1 && coordinates.y < width - 1)
-			yield return (coordinates.x + 1, coordinates.y + 1);
-
 	}
 
 	private int Flash()
 	{
 		var sum = 0;
-		for (var i = 0; i < InputArray.GetLength(0); i++)
+
+		foreach (var (index, value) in Grid)
 		{
-			for (var j = 0; j < InputArray.GetLength(1); j++)
+			if (value > 9)
 			{
-				if (InputArray[i, j] > 9)
+				sum++;
+				Grid[index] = 0;
+
+				var neighbours = GetNeighbours(index);
+
+				foreach (var pos in neighbours)
 				{
-					sum++;
-					InputArray[i, j] = 0;
-
-					var neighbours = GetNeighbours((i, j));
-
-					foreach (var (x, y) in neighbours)
-					{
-						if (InputArray[x, y] > 0)
-						{
-							InputArray[x, y]++;
-						}
-					}
+					if (Grid[pos] > 0)
+						Grid[pos]++;
 				}
 			}
 		}
@@ -81,32 +49,23 @@ public class Day11 : IAdventDay
 		var sum = 0;
 		for (var day = 0; day < 100; day++)
 		{
-			for (var i = 0; i < InputArray.GetLength(0); i++)
-			{
-				for (var j = 0; j < InputArray.GetLength(1); j++)
-				{
-					InputArray[i, j]++;
-				}
-			}
+			foreach (var positon in Grid.Positions())
+				Grid[positon]++;
 
 			sum += Flash();
 		}
 
 		return sum.ToString();
 	}
+
 	public string Part2()
 	{
 		var day = 0;
-		while (!InputArray.Cast<int>().All(a => a == 0))
+		while (!Grid.All(a => a.value == 0))
 		{
 			day++;
-			for (var i = 0; i < InputArray.GetLength(0); i++)
-			{
-				for (var j = 0; j < InputArray.GetLength(1); j++)
-				{
-					InputArray[i, j]++;
-				}
-			}
+			foreach (var positon in Grid.Positions())
+				Grid[positon]++;
 
 			Flash();
 		}
