@@ -1,45 +1,44 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2021;
 
 public class Day05(string input) : IAdventDay
 {
-	private record Line(Coordinate Origin, Coordinate Destination);
-	private record Coordinate(int X, int Y);
-
-	private int[,] Map { get; } = new int[1000, 1000];
+	private record Line(Position2D Origin, Position2D Destination);
+	private Map2D<int> Map { get; } = new Map2D<int>(1000, 1000);
 	private Line[] Lines { get; } = [.. input.Split("\n").Select(s =>
 		{
 			var data = s.Split("->");
 			var origin = data[0].Split(",");
 			var destination = data[1].Split(",");
 			return new Line(
-				new Coordinate(int.Parse(origin[0]),int.Parse(origin[1])),
-				new Coordinate(int.Parse(destination[0]),int.Parse(destination[1]))
+				new Position2D(int.Parse(origin[0]),int.Parse(origin[1])),
+				new Position2D(int.Parse(destination[0]),int.Parse(destination[1]))
 			);
 		})];
 
-	private static (int x, int y)[] GetRange(Coordinate origin, Coordinate destination)
+	private static Position2D[] GetRange(Position2D origin, Position2D destination)
 	{
-		(var dx, var dy) = (origin.X - destination.X, origin.Y - destination.Y);
+		var delta = origin - destination;
 
-		var rangex = MakeRange(dx < 0 ? (origin.X, Math.Abs(dx)) : (destination.X, dx));
-		var rangey = MakeRange(dy < 0 ? (origin.Y, Math.Abs(dy)) : (destination.Y, dy));
+		var rangex = MakeRange(delta.X < 0 ? (origin.X, Math.Abs(delta.X)) : (destination.X, delta.X));
+		var rangey = MakeRange(delta.Y < 0 ? (origin.Y, Math.Abs(delta.Y)) : (destination.Y, delta.Y));
 
-		if (dx == 0 || dy == 0)
+		if (delta.X == 0 || delta.Y == 0)
 		{
-			return [.. rangex.SelectMany(x => rangey, (x, y) => (x, y))];
+			return [.. rangex.SelectMany(x => rangey, (x, y) => new Position2D(x, y))];
 		}
 		else
 		{
-			var output = new List<(int, int)>();
+			var output = new List<Position2D>();
 
-			var inverty = dx > 0 && dy < 0;
-			var invertx = dx < 0 && dy > 0;
+			var inverty = delta.X > 0 && delta.Y < 0;
+			var invertx = delta.X < 0 && delta.Y > 0;
 
 			for (var i = 0; i < rangey.Length; i++)
 			{
-				output.Add((rangex[invertx ? rangey.Length - 1 - i : i], rangey[inverty ? rangey.Length - 1 - i : i]));
+				output.Add(new(rangex[invertx ? rangey.Length - 1 - i : i], rangey[inverty ? rangey.Length - 1 - i : i]));
 			}
 
 			return [.. output];
@@ -48,7 +47,6 @@ public class Day05(string input) : IAdventDay
 
 	private static int[] MakeRange((int, int) range) => [.. Enumerable.Range(range.Item1, range.Item2 + 1)];
 
-
 	public string Part1()
 	{
 		var twoPlus = 0;
@@ -56,15 +54,15 @@ public class Day05(string input) : IAdventDay
 		foreach (var line in Lines.Where(w => w.Origin.X == w.Destination.X || w.Origin.Y == w.Destination.Y))
 		{
 			var range = GetRange(line.Origin, line.Destination);
-			foreach (var (x, y) in range)
+			foreach (var position in range)
 			{
-				Map[x, y]++;
+				Map[position]++;
 			}
 		}
 
-		foreach (var thing in Map)
+		foreach (var (_, value) in Map)
 		{
-			if (thing >= 2)
+			if (value >= 2)
 			{
 				twoPlus++;
 			}
@@ -80,15 +78,15 @@ public class Day05(string input) : IAdventDay
 		foreach (var line in Lines)
 		{
 			var range = GetRange(line.Origin, line.Destination);
-			foreach (var (x, y) in range)
+			foreach (var position in range)
 			{
-				Map[x, y]++;
+				Map[position]++;
 			}
 		}
 
-		foreach (var thing in Map)
+		foreach (var (_, value) in Map)
 		{
-			if (thing >= 2)
+			if (value >= 2)
 			{
 				twoPlus++;
 			}

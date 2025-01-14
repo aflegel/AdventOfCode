@@ -5,7 +5,7 @@ namespace AdventOfCode.Y2021;
 public class Day03(string input) : IAdventDay
 {
 	private List<List<bool>> InputArray { get; } = [.. input.Split("\n")
-		.Select(s => new List<bool>(s.Where(s => s is '0' or '1').Select(s => s != '0')))];
+		.Select(s => new List<bool>(s.Select(s => s != '0')))];
 
 	private int ConvertToInt(int[] sums)
 	{
