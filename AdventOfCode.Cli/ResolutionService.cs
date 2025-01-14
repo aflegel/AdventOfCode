@@ -15,7 +15,7 @@ internal class ResolutionService
         if (type.GetInterface(nameof(IAdventDay)) is null)
             throw new InvalidCastException($"{type} does not implement interface IAdventDay");
 
-        using var stream = new StreamReader($"Day{day:D2}.txt");
+        using var stream = new StreamReader($"Y{year}\\Day{day:D2}.txt");
         var input = await stream.ReadToEndAsync();
 
         var ctor = (type?.GetConstructor([typeof(string)]))

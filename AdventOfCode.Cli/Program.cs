@@ -19,7 +19,7 @@ do
     }
 
     if (arguments[0] != first[0])
-        arguments = [.. first.Union(arguments)];
+        arguments = [.. first.Concat(arguments)];
 
     handler.Invoke(arguments);
 
