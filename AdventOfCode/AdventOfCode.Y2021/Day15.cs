@@ -1,26 +1,12 @@
 ﻿using AdventOfCode.Core;
+using AdventOfCode.Map;
 
 namespace AdventOfCode.Y2021;
 
-public class Day15 : IAdventDay
+public class Day15(string input) : IAdventDay
 {
-	private int[,] InputArray { get; }
 
-	public Day15(string input)
-	{
-		var rows = input.Split("\n");
-
-		InputArray = new int[rows.Length, rows.First().Length];
-
-		for (var i = 0; i < rows.Length; i++)
-		{
-			for (var j = 0; j < rows[i].Length; j++)
-			{
-				InputArray[i, j] = Convert.ToInt32($"{rows[i][j]}");
-			}
-		}
-	}
-
+	private Map2D<int> Grid { get; } = new Map2D<int>(input.Split("\n").Select(s => s.Select(ss => ss.ToInt())));
 	private class Tile : IEquatable<Tile>
 	{
 		public int X { get; set; }
@@ -34,29 +20,25 @@ public class Day15 : IAdventDay
 		public override bool Equals(object obj) => Equals(obj as Tile);
 	}
 
-	private static List<Tile> GetNextTiles(int[,] input, Tile currentTile)
+	private static int AStar(Map2D<int> input)
 	{
-		var maxX = input.GetLength(0) - 1;
-		var maxY = input.GetLength(1) - 1;
+		Direction[] adjacent = [Direction.Right, Direction.Up, Direction.Left, Direction.Down];
 
-		var possibleTiles = new List<Tile>()
+		IEnumerable<Tile> GetNextTiles(Tile currentTile)
 		{
-			new() { X = currentTile.X, Y = currentTile.Y - 1, Parent = currentTile },
-			new() { X = currentTile.X, Y = currentTile.Y + 1, Parent = currentTile },
-			new() { X = currentTile.X - 1, Y = currentTile.Y, Parent = currentTile },
-			new() { X = currentTile.X + 1, Y = currentTile.Y, Parent = currentTile },
+			foreach (var dir in adjacent)
+			{
+				var next = new Position2D(currentTile.X, currentTile.Y).Move(dir);
+				if (!input.OutOfBounds(next))
+					yield return new Tile
+					{
+						Cost = input[next],
+						Parent = currentTile,
+						X = next.X,
+						Y = next.Y
+					};
+			}
 		}
-			.Where(tile => tile.X >= 0 && tile.X <= maxX)
-			.Where(tile => tile.Y >= 0 && tile.Y <= maxY)
-			.ToList();
-
-		possibleTiles.ForEach(tile => tile.Cost = input[tile.X, tile.Y]);
-
-		return possibleTiles;
-	}
-
-	private static int AStar(int[,] input)
-	{
 		var start = new Tile
 		{
 			X = 0,
@@ -66,17 +48,14 @@ public class Day15 : IAdventDay
 
 		var finish = new Tile
 		{
-			X = input.GetLength(0) - 1,
-			Y = input.GetLength(1) - 1,
+			X = input.Width - 1,
+			Y = input.Height - 1,
 		};
 
-		var activeTiles = new List<Tile>
-		{
-			start
-		};
+		var activeTiles = new List<Tile> { start };
 		var visitedTiles = new List<Tile>();
 
-		while (activeTiles.Any())
+		while (activeTiles.Count != 0)
 		{
 			var checkTile = activeTiles.OrderBy(x => x.TotalCost).First();
 
@@ -88,7 +67,7 @@ public class Day15 : IAdventDay
 			visitedTiles.Add(checkTile);
 			activeTiles.Remove(checkTile);
 
-			var nextTiles = GetNextTiles(input, checkTile);
+			var nextTiles = GetNextTiles(checkTile);
 
 			foreach (var next in nextTiles)
 			{
@@ -114,23 +93,22 @@ public class Day15 : IAdventDay
 		return -1;
 	}
 
-	public string Part1() => AStar(InputArray).ToString();
+	public string Part1() => AStar(Grid).ToString();
 
 	public string Part2()
 	{
-		var oldX = InputArray.GetLength(0);
-		var oldY = InputArray.GetLength(1);
-		var largeInput = new int[oldX * 5, oldY * 5];
+		var oldX = Grid.Width;
+		var oldY = Grid.Height;
+		var largeInput = new Map2D<int>(oldX * 5, oldY * 5);
 
-		for (var i = 0; i < largeInput.GetLength(0); i++)
+		foreach (var pos in largeInput.Positions())
 		{
-			for (var j = 0; j < largeInput.GetLength(1); j++)
-			{
-				largeInput[i, j] = InputArray[i % oldX, j % oldY] + i / oldX + j / oldY;
-				if (largeInput[i, j] >= 10)
-					largeInput[i, j] -= 9;
-			}
+			var small = new Position2D(pos.X % oldX, pos.Y % oldY);
+			largeInput[pos] = Grid[small] + pos.X / oldX + pos.Y / oldY;
+			if (largeInput[pos] >= 10)
+				largeInput[pos] -= 9;
 		}
+
 
 		return AStar(largeInput).ToString();
 	}
