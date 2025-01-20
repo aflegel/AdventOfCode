@@ -11,9 +11,9 @@ public class Day17Tests
 	[Fact]
 	public void Part1SouldMatchExampleCountA()
 	{
-		var day2 = new Day17(input);
+		var day = new Day17(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("45");
 	}
@@ -21,9 +21,9 @@ public class Day17Tests
 	[Fact]
 	public void Part2SouldMatchExampleCountH()
 	{
-		var day2 = new Day17(input);
+		var day = new Day17(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("112");
 	}

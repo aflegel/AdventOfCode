@@ -20,9 +20,9 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day08(input);
+		var day = new Day08(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("26");
 	}
@@ -30,9 +30,9 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 	[Fact]
 	public void Part2SouldMatchExampleCount()
 	{
-		var day2 = new Day08(input);
+		var day = new Day08(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("61229");
 	}

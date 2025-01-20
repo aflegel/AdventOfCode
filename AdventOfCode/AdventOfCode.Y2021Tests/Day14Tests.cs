@@ -28,9 +28,9 @@ CN -> C";
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day14(input);
+		var day = new Day14(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("1588");
 	}
@@ -38,9 +38,9 @@ CN -> C";
 	[Fact]
 	public void Part2SouldMatchExampleCount()
 	{
-		var day2 = new Day14(input);
+		var day = new Day14(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("2188189693529");
 	}

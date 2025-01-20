@@ -20,9 +20,9 @@ public class Day05Tests
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day05(input);
+		var day = new Day05(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("5");
 	}
@@ -30,9 +30,9 @@ public class Day05Tests
 	[Fact]
 	public void Part2SouldMatchExampleCount()
 	{
-		var day2 = new Day05(input);
+		var day = new Day05(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("12");
 	}

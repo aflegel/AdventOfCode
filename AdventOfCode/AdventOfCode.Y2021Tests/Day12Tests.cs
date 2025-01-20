@@ -47,9 +47,9 @@ start-RW";
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day12(input);
+		var day = new Day12(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("10");
 	}
@@ -57,9 +57,9 @@ start-RW";
 	[Fact]
 	public void Part1SouldMatchExampleCount2()
 	{
-		var day2 = new Day12(input2);
+		var day = new Day12(input2);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("19");
 	}
@@ -67,9 +67,9 @@ start-RW";
 	[Fact]
 	public void Part1SouldMatchExampleCount3()
 	{
-		var day2 = new Day12(input3);
+		var day = new Day12(input3);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("226");
 	}
@@ -77,9 +77,9 @@ start-RW";
 	[Fact]
 	public void Part2SouldMatchExampleCount()
 	{
-		var day2 = new Day12(input);
+		var day = new Day12(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("36");
 	}
@@ -87,9 +87,9 @@ start-RW";
 	[Fact]
 	public void Part2SouldMatchExampleCount2()
 	{
-		var day2 = new Day12(input2);
+		var day = new Day12(input2);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("103");
 	}
@@ -97,9 +97,9 @@ start-RW";
 	[Fact]
 	public void Part2SouldMatchExampleCount3()
 	{
-		var day2 = new Day12(input3);
+		var day = new Day12(input3);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("3509");
 	}

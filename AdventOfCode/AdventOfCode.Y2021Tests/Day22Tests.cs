@@ -93,9 +93,9 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507";
 	[Fact]
 	public void Part1SouldMatchExampleCountB()
 	{
-		var day2 = new Day22(input1);
+		var day = new Day22(input1);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("590784");
 	}
@@ -103,9 +103,9 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507";
 	[Fact]
 	public void Part2SouldMatchExampleCountH()
 	{
-		var day2 = new Day22(input2);
+		var day = new Day22(input2);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("2758514936282235");
 	}

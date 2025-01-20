@@ -20,9 +20,9 @@ v.v..>>v.v
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day25(input);
+		var day = new Day25(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("58");
 	}

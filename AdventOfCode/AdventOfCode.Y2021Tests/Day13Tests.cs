@@ -31,9 +31,9 @@ fold along x=5";
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day13(input);
+		var day = new Day13(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("17");
 	}
@@ -41,9 +41,9 @@ fold along x=5";
 	[Fact]
 	public void Part2SouldMatchExampleCount()
 	{
-		var day2 = new Day13(input);
+		var day = new Day13(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("16");
 	}

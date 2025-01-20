@@ -16,9 +16,9 @@ forward 2";
 	[Fact]
 	public void Part1SouldMatchExampleCount()
 	{
-		var day2 = new Day02(input);
+		var day = new Day02(input);
 
-		var answer = day2.Part1();
+		var answer = day.Part1();
 
 		answer.Should().Be("150");
 	}
@@ -26,9 +26,9 @@ forward 2";
 	[Fact]
 	public void Part2SouldMatchExampleCount()
 	{
-		var day2 = new Day02(input);
+		var day = new Day02(input);
 
-		var answer = day2.Part2();
+		var answer = day.Part2();
 
 		answer.Should().Be("900");
 	}
