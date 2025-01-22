@@ -36,7 +36,7 @@ public class Day25(string input) : IAdventDay
 		{
 			var move = item.Move(direction);
 			if (current.OutOfBounds(move))
-				move = direction == Direction.Right ? new(0, move.Y) : new(move.X, 0);
+				move = direction == Direction.Right ? move with { X = 0 } : move with { Y = 0 };
 
 			if (current[move] == '.')
 				changes.Add((item, move));
