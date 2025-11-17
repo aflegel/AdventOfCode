@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/AdventOfCode/">
+    <Project Path="AdventOfCode/AdventOfCode.Y2021/AdventOfCode.Y2021.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2021Tests/AdventOfCode.Y2021Tests.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2023/AdventOfCode.Y2023.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2023Tests/AdventOfCode.Y2023Tests.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2024/AdventOfCode.Y2024.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2024Tests/AdventOfCode.Y2024Tests.csproj" />
+  </Folder>
+  <Project Path="AdventOfCode.Cli/AdventOfCode.Cli.csproj" />
+  <Project Path="AdventOfCode.Core/AdventOfCode.Core.csproj" />
+  <Project Path="AdventOfCode.Map/AdventOfCode.Map.csproj" />
+  <Project Path="AdventOfCode.MapTests/AdventOfCode.MapTests.csproj" />
+</Solution>
