@@ -7,56 +7,65 @@ var handler = new CliHandler();
 
 do
 {
-    Console.WriteLine("Enter the deets");
-    var data = Console.ReadLine();
+	Console.WriteLine("Enter the deets");
+	var data = Console.ReadLine();
 
-    var arguments = data?.Split(' ') ?? [];
+	var arguments = data?.Split(' ') ?? [];
 
-    if (arguments.Length == 0 || arguments[0] == string.Empty)
-    {
-        Console.WriteLine("Exiting...");
-        break;
-    }
+	if (arguments.Length == 0 || arguments[0] == string.Empty)
+	{
+		Console.WriteLine("Exiting...");
+		break;
+	}
 
-    if (arguments[0] != first[0])
-        arguments = [.. first.Concat(arguments)];
+	if (arguments[0] != first[0])
+		arguments = [.. first.Concat(arguments)];
 
-    handler.Invoke(arguments);
-
+	await handler.Invoke(arguments);
 } while (true);
 
 
 internal class CliHandler
 {
-    private RootCommand RootCommand { get; set; }
+	private RootCommand RootCommand { get; set; }
 
-    public CliHandler() => RootCommand = new RootCommand()
-            .WithAlias("run-solver")
-            .WithArgument(new Argument<int>("year", "Relevant year to solve, 2014-2024"))
-            .WithArgument(new Argument<int>("day", "Relevant day to solve, 1-25"))
-            .WithArgument(new Argument<int>("part", "Part 1 or 2"))
-            .WithHandler<int, int, int>(ShowOutput);
+	public CliHandler()
+	{
+		RootCommand = [];
 
+		var year = new Argument<int>("year") { Description = "Relevant year to solve, 2014-2024" };
+		var day = new Argument<int>("day") { Description = "Relevant day to solve, 1-25" };
+		var part = new Argument<int>("part") { Description = "Part 1 or 2" };
+		RootCommand.Arguments.Add(year);
+		RootCommand.Arguments.Add(day);
+		RootCommand.Arguments.Add(part);
 
-    public int Invoke(string[] args) => RootCommand.Invoke(args);
+		RootCommand.SetAction(async s =>
+		{
+			await ShowOutput(s.GetValue(year), s.GetValue(day), s.GetValue(part));
+			return 0;
+		});
+	}
 
-    private static void ShowOutput(int year, int day, int part)
-    {
-        try
-        {
-            var iDay = ResolutionService.GetDay(year, day).GetAwaiter().GetResult();
-            var result = ResolutionService.GetPart(iDay, part);
+	public Task<int> Invoke(string[] args) => RootCommand.Parse(args).InvokeAsync();
 
-            Console.WriteLine(result);
-            //needs some graceful error handling
-        }
-        catch (NotImplementedException)
-        {
-            Console.WriteLine("This part hasn't been implmented yet");
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("Something else went wrong");
-        }
-    }
+	private async static Task ShowOutput(int year, int day, int part)
+	{
+		try
+		{
+			var iDay = await ResolutionService.GetDay(year, day);
+			var result = ResolutionService.GetPart(iDay, part);
+
+			Console.WriteLine(result);
+			//needs some graceful error handling
+		}
+		catch (NotImplementedException)
+		{
+			Console.WriteLine("This part hasn't been implmented yet");
+		}
+		catch (Exception)
+		{
+			Console.WriteLine("Something else went wrong");
+		}
+	}
 }
