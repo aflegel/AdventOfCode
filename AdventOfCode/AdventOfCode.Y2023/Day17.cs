@@ -27,8 +27,8 @@ public class Day17(string input) : IAdventDay
 		var minDist = int.MaxValue;
 
 		var visited = new Dictionary<Position2D, int>();
-		var sortedSet = new PriorityQueue<(Position2D, Direction, List<(Position2D, Direction)>), int>();
-		sortedSet.Enqueue((new(0, 0), Direction.UpLeft, []), 0);
+		var sortedSet = new PriorityQueue<(Position2D, Direction, int), int>();
+		sortedSet.Enqueue((new(0, 0), Direction.UpLeft, 0), 0);
 
 		while (sortedSet.TryDequeue(out var state, out var cost))
 		{
@@ -36,7 +36,8 @@ public class Day17(string input) : IAdventDay
 
 			if (cost >= minDist)
 				continue;
-
+			if (cost > 1000)
+				break;
 			if (current == end)
 			{
 				if (cost < minDist)
@@ -59,19 +60,21 @@ public class Day17(string input) : IAdventDay
 				if (newCost >= minDist)
 					continue;
 
-				if (visited.TryGetValue(next, out var prev) && prev < newCost)
+				if (visited.TryGetValue(next, out var prev))// && prev < newCost)
 					continue;
 
-				var limitReached = CalculateConsecutive(history, dir);
-				if (!limitReached)
-					sortedSet.Enqueue((next, dir, [.. history, (next, dir)]), newCost);
+				var nhistory = lastDir == dir ? history + 1 : 0;
+				if (nhistory < 3)
+					sortedSet.Enqueue((next, dir, nhistory), newCost);
+				else
+					continue;
 			}
 		}
 
 		return minDist;
 	}
 
-	private static bool CalculateConsecutive(List<(Position2D, Direction)> list, Direction dir) => list.Count >= 3 && list[^3..].All(a => a.Item2 == dir);
+	// private static bool CalculateConsecutive(List<(Position2D, Direction)> list, Direction dir) => list.Count >= 3 && list[^3..].All(a => a.Item2 == dir);
 
 	public string Part2()
 	{
