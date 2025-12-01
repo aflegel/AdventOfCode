@@ -5,7 +5,6 @@ namespace AdventOfCode.Y2024;
 
 public partial class Day04(string input) : IAdventDay
 {
-
 	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 
 	public string Part1()
@@ -56,9 +55,9 @@ public partial class Day04(string input) : IAdventDay
 		if (InputArray.OutOfBounds(pattern.M2) || InputArray.OutOfBounds(pattern.A) || InputArray.OutOfBounds(pattern.S1) || InputArray.OutOfBounds(pattern.S2))
 			return false;
 
-		return InputArray[pattern.M2] == 'M' 
-			&& InputArray[pattern.A] == 'A' 
-			&& InputArray[pattern.S1] == 'S' 
+		return InputArray[pattern.M2] == 'M'
+			&& InputArray[pattern.A] == 'A'
+			&& InputArray[pattern.S1] == 'S'
 			&& InputArray[pattern.S2] == 'S';
 	}
 

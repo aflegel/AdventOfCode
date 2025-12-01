@@ -6,6 +6,8 @@
     <Project Path="AdventOfCode/AdventOfCode.Y2023Tests/AdventOfCode.Y2023Tests.csproj" />
     <Project Path="AdventOfCode/AdventOfCode.Y2024/AdventOfCode.Y2024.csproj" />
     <Project Path="AdventOfCode/AdventOfCode.Y2024Tests/AdventOfCode.Y2024Tests.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2025/AdventOfCode.Y2025.csproj" />
+    <Project Path="AdventOfCode/AdventOfCode.Y2025Tests/AdventOfCode.Y2025Tests.csproj" />
   </Folder>
   <Project Path="AdventOfCode.Cli/AdventOfCode.Cli.csproj" />
   <Project Path="AdventOfCode.Core/AdventOfCode.Core.csproj" />

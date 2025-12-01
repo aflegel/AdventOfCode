@@ -23,7 +23,7 @@ MXMXAXMASX".ReplaceLineEndings("\n");
 		var map = Map2D<char>.FromString(input);
 
 		var output = map.ToString();
-		
+
 		output.Should().Be(input);
 	}
 }

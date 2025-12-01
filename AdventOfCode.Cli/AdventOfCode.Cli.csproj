@@ -5,6 +5,7 @@
     <ProjectReference Include="..\AdventOfCode\AdventOfCode.Y2021\AdventOfCode.Y2021.csproj" />
     <ProjectReference Include="..\AdventOfCode\AdventOfCode.Y2023\AdventOfCode.Y2023.csproj" />
     <ProjectReference Include="..\AdventOfCode\AdventOfCode.Y2024\AdventOfCode.Y2024.csproj" />
+    <ProjectReference Include="..\AdventOfCode\AdventOfCode.Y2025\AdventOfCode.Y2025.csproj" />
   </ItemGroup>
 
   <ItemGroup>

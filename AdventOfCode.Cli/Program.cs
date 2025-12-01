@@ -42,30 +42,26 @@ internal class CliHandler
 
 		RootCommand.SetAction(async s =>
 		{
-			await ShowOutput(s.GetValue(year), s.GetValue(day), s.GetValue(part));
+			try
+			{
+				var iDay = await ResolutionService.GetDay(s.GetValue(year), s.GetValue(day));
+				var result = iDay.GetPart(s.GetValue(part));
+
+				Console.WriteLine(result);
+				//needs some graceful error handling
+			}
+			catch (NotImplementedException)
+			{
+				Console.WriteLine("This part hasn't been implmented yet");
+			}
+			catch (Exception)
+			{
+				Console.WriteLine("Something else went wrong");
+			}
+
 			return 0;
 		});
 	}
 
 	public Task<int> Invoke(string[] args) => RootCommand.Parse(args).InvokeAsync();
-
-	private async static Task ShowOutput(int year, int day, int part)
-	{
-		try
-		{
-			var iDay = await ResolutionService.GetDay(year, day);
-			var result = ResolutionService.GetPart(iDay, part);
-
-			Console.WriteLine(result);
-			//needs some graceful error handling
-		}
-		catch (NotImplementedException)
-		{
-			Console.WriteLine("This part hasn't been implmented yet");
-		}
-		catch (Exception)
-		{
-			Console.WriteLine("Something else went wrong");
-		}
-	}
 }
