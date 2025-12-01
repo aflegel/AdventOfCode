@@ -42,6 +42,7 @@ internal sealed class Libraries
 		2021 => typeof(Y2021.Day01).Assembly,
 		2023 => typeof(Y2023.Day01).Assembly,
 		2024 => typeof(Y2024.Day01).Assembly,
+		2025 => typeof(Y2025.Day01).Assembly,
 		_ => default
 	};
 }
