@@ -58,6 +58,18 @@ public class Map2D<T> : IEnumerable<(Position2D index, T value)>, IEnumerable
 		}
 	}
 
+	public IEnumerable<Position2D> GetAdjacent(Position2D position)
+		=> GetAdjacents(position, Enum.GetValues<Direction>());
+
+	public IEnumerable<Position2D> GetDiagonal(Position2D position)
+		=> GetAdjacents(position, [Direction.UpRight, Direction.UpLeft, Direction.DownLeft, Direction.DownRight]);
+
+	public IEnumerable<Position2D> GetOrthogonal(Position2D position)
+		=> GetAdjacents(position, [Direction.Right, Direction.Up, Direction.Left, Direction.Down]);
+
+	public IEnumerable<Position2D> GetAdjacents(Position2D position, Direction[] directions)
+		=> directions.Select(s => position.Move(s)).Where(next => !OutOfBounds(next));
+
 	public IEnumerable<(Position2D index, T value)> Row(int y)
 	{
 		for (var x = 0; x < Width; ++x)

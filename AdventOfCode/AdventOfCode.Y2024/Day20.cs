@@ -11,14 +11,14 @@ public class Day20(string input) : IAdventDay
 	public string Part1()
 	{
 		var path = GetPath();
-		return GetCheats(path, 2).Where(w => w.Value <= -100).Count().ToString();
+		return GetCheats(path, 2).Count(w => w.Value <= -100).ToString();
 	}
 
 	private HashSet<(Position2D position, int cost)> GetPath()
 	{
 		var current = Map.SearchAll('S').First();
 		var end = Map.SearchAll('E').First();
-		
+
 		var path = new HashSet<(Position2D, int)>();
 		var cost = 0;
 		var direction = Direction.UpLeft;
@@ -61,9 +61,9 @@ public class Day20(string input) : IAdventDay
 		return cheatList;
 	}
 
-	private static IEnumerable<(Position2D position, int cost, (int, int) diff)> SearchPath(HashSet<(Position2D position, int cost)> path, (Position2D position, int cost) target, int distance) 
+	private static IEnumerable<(Position2D position, int cost, (int, int) diff)> SearchPath(HashSet<(Position2D position, int cost)> path, (Position2D position, int cost) target, int distance)
 		=> path
-			//only get steps further along the path 
+			//only get steps further along the path
 			.Where(w => w.cost > target.cost)
 			//only get steps within the desired distance
 			.Where(w => (w.position - target.position).Steps <= distance)
@@ -72,6 +72,6 @@ public class Day20(string input) : IAdventDay
 	public string Part2()
 	{
 		var path = GetPath();
-		return GetCheats(path, 20).Where(w => w.Value <= -100).Count().ToString();
+		return GetCheats(path, 20).Count(w => w.Value <= -100).ToString();
 	}
 }

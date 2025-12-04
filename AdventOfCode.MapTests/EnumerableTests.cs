@@ -16,7 +16,7 @@ XXAMMXXAMA
 SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
-MXMXAXMASX".ReplaceLineEndings("\n");
+MXMXAXMASX";
 
 	[Fact]
 	public void RowShouldReturnRow()

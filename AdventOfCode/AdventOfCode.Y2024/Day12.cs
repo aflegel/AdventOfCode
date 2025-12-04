@@ -9,7 +9,7 @@ public class Day12(string input) : IAdventDay
 
 	private Map2D<char> InputArray { get; } = Map2D<char>.FromString(input);
 
-	public string Part1() => BuildMap().Select(CountEdges).Sum().ToString();
+	public string Part1() => BuildMap().Sum(CountEdges).ToString();
 
 	private int CountEdges(HashSet<Position2D> map)
 	{
@@ -68,7 +68,7 @@ public class Day12(string input) : IAdventDay
 		return set;
 	}
 
-	public string Part2() => BuildMap().Select(CountCorners).Sum().ToString();
+	public string Part2() => BuildMap().Sum(CountCorners).ToString();
 
 	private int CountCorners(HashSet<Position2D> map)
 	{

@@ -7,16 +7,6 @@ public class Day11(string input) : IAdventDay
 {
 	private Map2D<int> Grid { get; init; } = new Map2D<int>(input.Split("\n").Select(s => s.Select(ss => ss.ToInt())));
 
-	private IEnumerable<Position2D> GetNeighbours(Position2D coordinates)
-	{
-		foreach (var dir in Enum.GetValues<Direction>())
-		{
-			var next = coordinates.Move(dir);
-			if (!Grid.OutOfBounds(next))
-				yield return next;
-		}
-	}
-
 	private int Flash()
 	{
 		var sum = 0;
@@ -28,7 +18,7 @@ public class Day11(string input) : IAdventDay
 				sum++;
 				Grid[index] = 0;
 
-				var neighbours = GetNeighbours(index);
+				var neighbours = Grid.GetAdjacent(index);
 
 				foreach (var pos in neighbours)
 				{

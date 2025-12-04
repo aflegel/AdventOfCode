@@ -5,8 +5,6 @@ namespace AdventOfCode.Y2021;
 
 public class Day09(string input) : IAdventDay
 {
-	private Direction[] Adjacent { get; } = [Direction.Right, Direction.Up, Direction.Left, Direction.Down];
-
 	private Map2D<int> Grid { get; init; } = new Map2D<int>(input.Split("\n").Select(s => s.Select(ss => ss.ToInt())));
 
 	public string Part1() => GetLowPoints().Sum(s => Grid[s] + 1).ToString();
@@ -15,19 +13,10 @@ public class Day09(string input) : IAdventDay
 	{
 		foreach (var (index, value) in Grid)
 		{
-			var neighbours = GetNeighbours(index);
+			var neighbours = Grid.GetOrthogonal(index);
 
 			if (neighbours.All(a => Grid[a] > value))
 				yield return index;
-		}
-	}
-
-	private IEnumerable<Position2D> GetNeighbours(Position2D coordinates)
-	{
-		foreach(var dir in Adjacent){
-			var next = coordinates.Move(dir);
-			if(!Grid.OutOfBounds(next))
-				yield return next;
 		}
 	}
 
@@ -42,7 +31,7 @@ public class Day09(string input) : IAdventDay
 
 	private Position2D[] GetBasins(Position2D[] coordinateList, Position2D coordinate)
 	{
-		var neighbours = GetNeighbours(coordinate).Where(i => Grid[i] != 9).ToList();
+		var neighbours = Grid.GetOrthogonal(coordinate).Where(i => Grid[i] != 9).ToList();
 
 		var current = coordinateList.Union(neighbours).ToArray();
 		foreach (var i in neighbours.Except(coordinateList))
