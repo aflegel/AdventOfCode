@@ -9,7 +9,7 @@ public class Day15(string input) : IAdventDay
 
 	public string Part1()
 	{
-		var result = InputArray.Select(Hash).Sum();
+		var result = InputArray.Sum(Hash);
 		return result.ToString();
 	}
 
@@ -48,7 +48,7 @@ public class Day15(string input) : IAdventDay
 			var split = lens.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 			return (index + 1) * (position + 1) * int.Parse(split[1]);
 		})).Sum();
-	
+
 		return result.ToString();
 	}
 }

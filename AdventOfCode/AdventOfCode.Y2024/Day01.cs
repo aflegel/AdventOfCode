@@ -25,6 +25,6 @@ public class Day01(string input) : IAdventDay
 		var left = InputArray.Select(s => s.Item1).ToList();
 		var right = InputArray.Select(s => s.Item2).ToList();
 
-		return left.Select(s => right.Count(c => c == s) * s).Sum().ToString();
+		return left.Sum(s => right.Count(c => c == s) * s).ToString();
 	}
 }

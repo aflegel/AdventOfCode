@@ -6,11 +6,7 @@ namespace AdventOfCode.Y2021;
 public class Day13(string input) : IAdventDay
 {
 	private enum Fold { X, Y, }
-	private Position2D[] InputArray { get; } = [.. input.Split("\n\n")[0].Split("\n").Select(s =>
-		{
-			var temp = s.Split(",");
-			return new Position2D(int.Parse(temp[0]), int.Parse(temp[1]));
-		})];
+	private Position2D[] InputArray { get; } = [.. input.Split("\n\n")[0].Split("\n").Select(Position2D.FromString)];
 
 	private (Fold fold, int i)[] FoldArray { get; } = [.. input.Split("\n\n")[1].Split("\n").Select(s =>
 		{

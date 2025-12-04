@@ -47,7 +47,7 @@ public class Day14(string input) : IAdventDay
 		return grid;
 	}
 
-	private static int CalculateLoad(Map2D<char> grid) => grid.SearchAll('O').Select(s => grid.Height - s.Y).Sum();
+	private static int CalculateLoad(Map2D<char> grid) => grid.SearchAll('O').Sum(s => grid.Height - s.Y);
 
 	public string Part2()
 	{

@@ -8,11 +8,11 @@ public class Day01(string input) : IAdventDay
 
 	public string Part1()
 		=> InputArray.Select(s => s.Where(item => char.IsDigit(item)).ToArray())
-			.Select(w => Convert.ToInt32($"{w.First()}{w.Last()}")).Sum().ToString();
+			.Sum(w => Convert.ToInt32($"{w.First()}{w.Last()}")).ToString();
 
 
 	public string Part2()
-		=> InputArray.Select(s =>
+		=> InputArray.Sum(s =>
 		{
 			var list = ResolveNumbers(s).Where(s => s.index >= 0);
 
@@ -20,7 +20,7 @@ public class Day01(string input) : IAdventDay
 			var max = list.OrderBy(o => o.index).Last().value;
 
 			return Convert.ToInt32($"{min}{max}");
-		}).Sum().ToString();
+		}).ToString();
 
 	private static IEnumerable<(int index, int value)> ResolveNumbers(string input)
 	{

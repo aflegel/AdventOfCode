@@ -15,7 +15,7 @@ public class Day03(string input) : IAdventDay
 		if (depth - 1 > battery.Length)
 			return "";
 
-		var max = battery[..^(depth - 1)].Select(s => s.ToInt()).Max().ToString();
+		var max = battery[..^(depth - 1)].Max(s => s.ToInt()).ToString();
 
 		return $"{max}{GetHighest(battery[(battery.IndexOf(max) + 1)..], depth - 1)}";
 	}

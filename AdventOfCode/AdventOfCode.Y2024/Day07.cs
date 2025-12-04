@@ -11,9 +11,9 @@ public class Day07(string input) : IAdventDay
 		return new Equation(Convert.ToInt64(split[0]), [.. data]);
 	})];
 
-	public string Part1() => InputArray.Select(equation => Validate(equation, ["*", "+"])).Sum().ToString();
+	public string Part1() => InputArray.Sum(equation => Validate(equation, ["*", "+"])).ToString();
 
-	public string Part2() => InputArray.Select(equation => Validate(equation, ["*", "+", "|"])).Sum().ToString();
+	public string Part2() => InputArray.Sum(equation => Validate(equation, ["*", "+", "|"])).ToString();
 
 	private static long Validate(Equation equation, List<string> operations)
 	{

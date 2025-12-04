@@ -26,8 +26,8 @@ public partial class Day13(string input) : IAdventDay
 			new(int.Parse(prize[1].Value), int.Parse(prize[2].Value)));
 	}).ToArray();
 
-	public string Part1() => InputArray.Select(s => Calculate(s, 0)).Sum().ToString();
-	public string Part2() => InputArray.Select(s => Calculate(s, 10000000000000)).Sum().ToString();
+	public string Part1() => InputArray.Sum(s => Calculate(s, 0)).ToString();
+	public string Part2() => InputArray.Sum(s => Calculate(s, 10000000000000)).ToString();
 
 	private static long Calculate(Arcade item, long increase = 0)
 	{

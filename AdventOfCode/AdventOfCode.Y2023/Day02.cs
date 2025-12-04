@@ -5,7 +5,12 @@ namespace AdventOfCode.Y2023;
 public class Day02(string input) : IAdventDay
 {
 	private record Draw(int Red, int Green, int Blue);
-	private record Game(int Id, Draw[] Draws);
+	private record Game(int Id, Draw[] Draws)
+	{
+		public int MaxRed {get;} = Draws.Max(m => m.Red);
+		public int MaxBlue {get;} = Draws.Max(m => m.Blue);
+		public int MaxGreen {get;} = Draws.Max(m => m.Green);
+	}
 
 	private Game[] InputArray { get; } = [.. input.Split("\n").Select(s =>
 	{
@@ -31,15 +36,15 @@ public class Day02(string input) : IAdventDay
 
 	public string Part1()
 	{
-		var yes = InputArray.Where(w => !w.Draws.Any(a => a.Red > 12 || a.Blue > 14 || a.Green > 13)).Select(s => s.Id).ToArray();
+		var yes = InputArray.Where(w => !w.Draws.Any(a => a.Red > 12 || a.Blue > 14 || a.Green > 13)).Sum(s => s.Id);
 
-		return yes.Sum().ToString();
+		return yes.ToString();
 	}
 
 	public string Part2()
 	{
-		var powers = InputArray.Select(s => s.Draws.Max(s => s.Red) * s.Draws.Max(s => s.Blue) * s.Draws.Max(s => s.Green)).ToArray();
+		var powers = InputArray.Sum(s => s.MaxRed * s.MaxBlue * s.MaxGreen);
 
-		return powers.Sum().ToString();
+		return powers.ToString();
 	}
 }

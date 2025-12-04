@@ -36,6 +36,12 @@ public record Position2D(int X, int Y) : IComparable<Position2D>
 	public static Position2D operator *(Position2D a, int b) => new(a.X * b, a.Y * b);
 	public static Position2D operator /(Position2D a, int b) => new(a.X / b, a.Y / b);
 
+	public static Position2D FromString(string input)
+	{
+		var origin = input.Split(",");
+		return new Position2D(int.Parse(origin[0]), int.Parse(origin[1]));
+	}
+
 	public Position2D Move(Direction direction) => Move(direction, 1);
 
 	public Position2D Move(Direction direction, int distance) => this + direction switch

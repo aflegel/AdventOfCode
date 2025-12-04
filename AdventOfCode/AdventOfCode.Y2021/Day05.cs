@@ -10,11 +10,10 @@ public class Day05(string input) : IAdventDay
 	private Line[] Lines { get; } = [.. input.Split("\n").Select(s =>
 		{
 			var data = s.Split("->");
-			var origin = data[0].Split(",");
-			var destination = data[1].Split(",");
+
 			return new Line(
-				new Position2D(int.Parse(origin[0]),int.Parse(origin[1])),
-				new Position2D(int.Parse(destination[0]),int.Parse(destination[1]))
+				Position2D.FromString(data[0]),
+				Position2D.FromString(data[1])
 			);
 		})];
 

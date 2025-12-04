@@ -22,12 +22,12 @@ public partial class Day05 : IAdventDay
 		InputArray = [.. lines[1].Split("\n").Select(s => s.Split(",").Select(ss => Convert.ToInt32(ss)).ToArray())];
 	}
 
-	public string Part1() => InputArray.Where(Validate).Select(s => s[s.Length / 2]).Sum().ToString();
+	public string Part1() => InputArray.Where(Validate).Sum(s => s[s.Length / 2]).ToString();
 
 	private bool Validate(int[] input) =>
 		!InputRules.Any(rule => input.Contains(rule.First) && input.Contains(rule.Second) && (Array.IndexOf(input, rule.First) > Array.IndexOf(input, rule.Second)));
 
-	public string Part2() => InputArray.Where(s => !Validate(s)).Select(FixInput).Select(s => s[s.Length / 2]).Sum().ToString();
+	public string Part2() => InputArray.Where(s => !Validate(s)).Select(FixInput).Sum(s => s[s.Length / 2]).ToString();
 
 	private int[] FixInput(int[] input)
 	{
